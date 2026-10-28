@@ -133,7 +133,7 @@ export class NitroGame {
   start() { if (!this.ready) return; this.reset(); this.active = true; this.status = 'Racing'; }
   reset() {
     if (!this.chassis) return;
-    this.active = false; this.speed = 0; this.side = 0; this.yaw = -Math.PI / 2; this.nitro = 100;
+    this.active = false; this.speed = 0; this.side = 0; this.yaw = Math.PI; this.nitro = 100;
     this.elapsed = 0; this.lap = 1; this.lastAngle = 0; this.progress = 0;
     this.chassis.setTranslation({ x: ROAD_RADIUS_X, y: 1.6, z: 0 }, true);
     this.chassis.setLinvel({ x: 0, y: 0, z: 0 }, true);
@@ -146,7 +146,7 @@ export class NitroGame {
     const p = this.chassis.translation();
     const angle = Math.atan2(p.z / ROAD_RADIUS_Z, p.x / ROAD_RADIUS_X);
     // Follow ellipse centerline using an arcade-style heading and velocity controller.
-    const desiredHeading = Math.atan2(-ROAD_RADIUS_X * Math.sin(angle), ROAD_RADIUS_Z * Math.cos(angle));
+    const desiredHeading = Math.atan2(ROAD_RADIUS_X * Math.sin(angle), -ROAD_RADIUS_Z * Math.cos(angle));
     let headingError = Math.atan2(Math.sin(desiredHeading - this.yaw), Math.cos(desiredHeading - this.yaw));
     const gas = this.pressed('gas'), brake = this.pressed('brake'), drifting = this.pressed('drift');
     const boosting = gas && this.pressed('nitro') && this.nitro > 0 && this.speed > 8;
