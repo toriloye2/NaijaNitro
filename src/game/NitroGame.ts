@@ -8,7 +8,6 @@ type Controls = 'left' | 'right' | 'gas' | 'brake' | 'drift' | 'nitro';
 const clamp = THREE.MathUtils.clamp;
 const ROAD_RADIUS_X = 115;
 const ROAD_RADIUS_Z = 75;
-const ROAD_WIDTH = 27;
 
 export class NitroGame {
   private scene = new THREE.Scene();
