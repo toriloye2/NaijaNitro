@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat';
 import { makeAsphaltMaterial, addRaceDecor } from './RoadSurface';
+import { decorateLagoon } from './LagoonDecor';
 
 const RX = 115, RZ = 75, WIDTH = 27;
 const mat = (color: number, metalness = 0, roughness = .82) =>
@@ -142,6 +143,7 @@ export function createThirdMainland(scene: THREE.Scene,world:RAPIER.World) {
     {a:4.16,text:'WELCOME TO LAGOS'}
   ];
   addRaceDecor(scene);
+  decorateLagoon(scene);
   for(const s of signage){
     const p=ellipse(s.a,0);
     for(const offset of [-10.5,10.5]){
