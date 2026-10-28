@@ -2,7 +2,7 @@
 
 **Lagos Asphalt** is a Nigeria-inspired browser arcade racing game. The ongoing migration replaces the original single-file JavaScript demo with a **TypeScript + Vite + Three.js + Rapier** codebase and a **React UI**.
 
-> **Current main-branch racing prototype:** This is a new driving-engine prototype, **not feature parity with v6.0.0**. The previous v6 game remains available under `game/index.html`. Current graphical and AI fidelity remains prototype-level. The new engine currently has a cinematic title screen, race countdown, animated nitro and wind effects, plus an upgraded Third Mainland Bridge-inspired oval test circuit, a procedural 2010 Camry Muscle-inspired sedan, a timing HUD, seven rival racing cars, nitro pickups, best-lap tracking and Rapier rigid-body collision handling. Automated build checks pass, but this graphics update still needs hands-on browser testing.
+> **Current main-branch racing prototype:** This is a new driving-engine prototype, **not feature parity with v6.0.0**. The previous v6 game remains available under `game/index.html`. Current graphical and AI fidelity remains prototype-level. The new engine currently has an interactive Nigeria-themed 3D car garage, race countdown, animated nitro and wind effects, plus an upgraded Third Mainland Bridge-inspired oval test circuit, a procedural 2010 Camry Muscle-inspired sedan, a timing HUD, seven rival racing cars, nitro pickups, best-lap tracking and Rapier rigid-body collision handling. Automated build checks pass, but this graphics update still needs hands-on browser testing.
 
 ## Technology
 
@@ -11,7 +11,7 @@
 | Development | TypeScript + Vite |
 | Rendering | Three.js |
 | Physics | Rapier 3D WASM (rigid bodies, colliders, ground and barriers) |
-| UI | React, CSS cinematic menus, pause, countdown and finish overlays |
+| UI | React, interactive 3D garage, CSS menus, pause, countdown and finish overlays |
 | Audio | Procedural Web Audio engine RPM, wind and nitro synthesis (no external samples); Howler.js installed but not used for this feature |
 | 3D art pipeline | Procedural detailed Camry-inspired sedan and bridge geometry today; Blender art planned |
 | Hosting | Netlify or Vercel |
@@ -101,6 +101,7 @@ Future pushes to `main` can trigger automatic deployments on connected hosting p
 - [ ] Migrate second legacy circuit and car selection
 - [x] Add improved stylized Third Mainland Bridge roadway, rails, supports, signs and Lagos skyline
 - [x] Add 2010 Camry Muscle-inspired 3D vehicle with lights, windows, wheels and trim
+- [x] Add Nigeria-themed interactive 3D car showroom and live paint customization
 - [ ] Import production-quality Blender meshes and more recognizable Nigerian landmarks
 - [x] Add reactive synthesized engine, wind and nitro audio (Web Audio API)
 - [x] Add cinematic title screen, pause, finish overlays, countdown, boost camera FOV, nitro flames and wind streaks
@@ -137,3 +138,15 @@ The vehicle is an **original procedural, stylized model inspired by the 2007–2
 - Procedurally textured asphalt with UVs, shore palms, Lagos Lagoon ferries, reflective markers and start-grid styling.
 - Arcade AI follows an ellipse and uses a simple player-gap adjustment. It does **not** yet implement tactical overtakes or robust opponent collision avoidance.
 - Road geometry and skyline are optimized stylized placeholders, not photorealistic recreations. Browser frame rates and handling require testing.
+
+## Lagos Racing Division garage
+
+The main menu now displays a new original 3D showroom inspired by Nigerian workshop culture, with national green-white-green accents, Lagos Racing Division branding, neon lighting, platform podium, detailed workshop bays, wheels and signage.
+
+- Rotate the XV40 Camry Muscle-inspired car using the arrow buttons.
+- Choose between six finishes: Pearl Silver, Lagos Green, Midnight Black, Sunset Red, Electric Blue and Champagne Gold.
+- Car paint is applied to both the showroom model and the in-race model, without changing physics.
+- See car performance stat bars, selected track, race event, and an 8-car race start button.
+- Responsive compact layout on smaller screens.
+
+This is an early procedural **3D garage scene**, not a photorealistic licensed vehicle or a fully functional purchasing/upgrades system. The displayed performance ratings are illustrative. The main game uses the existing simplified physics and track while higher-fidelity models and customization are still being developed.
