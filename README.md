@@ -2,7 +2,7 @@
 
 **Lagos Asphalt** is a Nigeria-inspired browser arcade racing game. The ongoing migration replaces the original single-file JavaScript demo with a **TypeScript + Vite + Three.js + Rapier** codebase and a **React UI**.
 
-> **Current main-branch racing prototype with interactive garage:** This is a new driving-engine prototype, **not feature parity with v6.0.0**. The previous v6 game remains available under `game/index.html`. Current graphical and AI fidelity remains prototype-level. The new engine currently has an interactive Nigeria-themed 3D car garage, race countdown, animated nitro and wind effects, plus an upgraded Third Mainland Bridge-inspired oval test circuit, a procedural 2010 Camry Muscle-inspired sedan, a timing HUD, seven rival racing cars, nitro pickups, best-lap tracking and Rapier rigid-body collision handling. Automated build checks pass, but this graphics update still needs hands-on browser testing.
+> **Current main-branch racing prototype with interactive garage:** This is a new driving-engine prototype, **not feature parity with v6.0.0**. The previous v6 game remains available under `game/index.html`. Current graphical and AI fidelity remains prototype-level. The new engine currently has an interactive Nigeria-themed 3D car garage, race countdown, animated nitro and wind effects, plus an upgraded Third Mainland Bridge-inspired oval test circuit, a more detailed reference-driven 2010 Camry Muscle-inspired sedan, a timing HUD, seven rival racing cars, nitro pickups, best-lap tracking and Rapier rigid-body collision handling. Automated build checks pass, but this graphics update still needs hands-on browser testing.
 
 ## Technology
 
@@ -150,3 +150,16 @@ The main menu now displays a new original 3D showroom inspired by Nigerian works
 - Responsive compact layout on smaller screens.
 
 This is an early procedural **3D garage scene**, not a photorealistic licensed vehicle or a fully functional purchasing/upgrades system. The displayed performance ratings are illustrative. The main game uses the existing simplified physics and track while higher-fidelity models and customization are still being developed.
+
+## Camry Muscle reference-model revision
+
+The user-provided silver front three-quarter, black rear three-quarter and champagne front-closeup photos guide the new **procedural XV40 Camry Muscle-style** model. This update changes the actual Three.js vehicle mesh used in the garage and in races, including:
+
+- Tapered three-box sedan profile, longer hood, sloping windscreen, roof and rear deck.
+- Swept headlights, amber corner lamps, grille outline, fog light accents, bumper intakes and plate recesses.
+- Wraparound rear lamp clusters, silver decklid trim and rear bumper details.
+- Four-door windows, B-pillars, chrome window surrounds, painted mirrors, side door seams and handles.
+- 5-spoke-style alloy wheels, rubber tyres, wheel-arch accents and reflective clearcoat paint.
+- Continued six-color customization with independently configurable materials for garage and race cars.
+
+**Accuracy and licensing:** This is an original stylized geometry approximation based on visual references, not a laser scan, official Toyota model, imported licensed mesh or photorealistic rendering. The photos themselves are not embedded. Geometry is constructed in TypeScript at runtime; a professionally made Blender/GLB model and hands-on visual QA will still be needed to reach premium commercial-game fidelity.
