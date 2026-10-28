@@ -1,9 +1,7 @@
 name: Generate Camry GLB asset
 
 on:
-  push:
-    branches:
-      - feature/game-ready-camry-glb
+  pull_request:
     paths:
       - 'tools/build_camry.py'
       - '.github/workflows/generate-camry.yml'
@@ -19,6 +17,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
+          ref: ${{ github.head_ref || github.ref_name }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
