@@ -1,4 +1,4 @@
-name: Generate Camry GLB asset
+name: Generate original NN S1 GLB asset
 
 on:
   pull_request:
@@ -30,7 +30,7 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           import trimesh
-          path = Path('public/vehicles/camry_muscle_xv40.glb')
+          path = Path('public/vehicles/nn_s1.glb')
           assert path.exists() and path.stat().st_size < 2_000_000
           model = trimesh.load(path, force='scene')
           assert len(model.geometry) >= 30
@@ -40,8 +40,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/vehicles/camry_muscle_xv40.glb
+          git add public/vehicles/nn_s1.glb
           if ! git diff --cached --quiet; then
-            git commit -m "build: publish generated Camry Muscle GLB asset"
+            git commit -m "build: publish generated NN S1 GLB asset"
             git push
           fi

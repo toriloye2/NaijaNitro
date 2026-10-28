@@ -79,8 +79,8 @@ function App() {
       </header>
       <aside className="garage-side">
         <span className="garage-eyebrow">YOUR GARAGE / 01</span>
-        <h1>THE <em>MUSCLE</em></h1>
-        <p className="garage-model">2010 CAMRY · XV40 INSPIRED</p>
+        <h1>THE <em>STREET S1</em></h1>
+        <p className="garage-model">NN S1 · LAGOS STREET EDITION</p>
         <span className="garage-flag">🇳🇬 NIGERIA COLLECTION</span>
         <div className="garage-stats">
           <div><span>TOP SPEED</span><div className="stat-meter"><i style={{width:'78%'}}/></div><b>78</b></div>
@@ -100,7 +100,7 @@ function App() {
       <aside className="garage-right">
         <div className="location-tag"><span>TRACK 01</span><strong>THIRD MAINLAND BRIDGE</strong><small>LAGOS LAGOON · NIGERIA</small></div>
         <div className="race-tile"><span>FEATURED EVENT</span><strong>THE LAGOS SPRINT</strong><small>8 RACERS · 3 LAPS · ARCADE</small></div>
-        {garageTab==='customize'&&<div className="garage-info">Select a paint finish on the left to change your Camry. More upgrades are planned.</div>}
+        {garageTab==='customize'&&<div className="garage-info">Select a paint finish on the left to change your NN S1. More upgrades are planned.</div>}
         {garageTab==='race'&&<div className="garage-info">Three laps, seven rivals, nitro pickups. Win the Lagos Sprint!</div>}
         {help&&<div className="garage-info">W / ↑ Accelerate · S / ↓ Brake · A / D Steer · Space Drift · Shift Nitro · P Pause · R Restart</div>}
       </aside>
@@ -115,7 +115,7 @@ function App() {
       {error&&<p className="garage-error" role="alert">{error}</p>}
     </section>}
     {info.phase==='paused'&&<section className="modal-overlay">
-      <div className="modal"><p className="eyebrow">LAGOS ASPHALT</p><h2>RACE PAUSED</h2><p>Your Camry is ready when you are.</p>
+      <div className="modal"><p className="eyebrow">LAGOS ASPHALT</p><h2>RACE PAUSED</h2><p>Your street machine is ready when you are.</p>
         <button className="play-button" onClick={()=>game.current?.togglePause()}>▶ RESUME</button>
         <button className="outline-button" onClick={()=>game.current?.backToMenu()}>MAIN MENU</button>
       </div>

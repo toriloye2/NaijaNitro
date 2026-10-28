@@ -2,7 +2,7 @@
 
 **Lagos Asphalt** is a Nigeria-inspired browser arcade racing game. The ongoing migration replaces the original single-file JavaScript demo with a **TypeScript + Vite + Three.js + Rapier** codebase and a **React UI**.
 
-> **Current main-branch racing prototype with interactive garage:** This is a new driving-engine prototype, **not feature parity with v6.0.0**. The previous v6 game remains available under `game/index.html`. Current graphical and AI fidelity remains prototype-level. The new engine currently has an interactive Nigeria-themed 3D car garage, race countdown, animated nitro and wind effects, plus an upgraded Third Mainland Bridge-inspired oval test circuit, a more detailed reference-driven 2010 Camry Muscle-inspired sedan, a timing HUD, seven rival racing cars, nitro pickups, best-lap tracking and Rapier rigid-body collision handling. Automated build checks pass, but this graphics update still needs hands-on browser testing.
+> **Current main-branch racing prototype with interactive garage:** This is a new driving-engine prototype, **not feature parity with v6.0.0**. The previous v6 game remains available under `game/index.html`. Current graphical and AI fidelity remains prototype-level. The new engine currently has an interactive Nigeria-themed 3D car garage, race countdown, animated nitro and wind effects, plus an upgraded Third Mainland Bridge-inspired oval test circuit, a more detailed reference-driven fictional NN Street S1-inspired sedan, a timing HUD, seven rival racing cars, nitro pickups, best-lap tracking and Rapier rigid-body collision handling. Automated build checks pass, but this graphics update still needs hands-on browser testing.
 
 ## Technology
 
@@ -13,7 +13,7 @@
 | Physics | Rapier 3D WASM (rigid bodies, colliders, ground and barriers) |
 | UI | React, interactive 3D garage, CSS menus, pause, countdown and finish overlays |
 | Audio | Procedural Web Audio engine RPM, wind and nitro synthesis (no external samples); Howler.js installed but not used for this feature |
-| 3D art pipeline | Procedural detailed Camry-inspired sedan and bridge geometry today; Blender art planned |
+| 3D art pipeline | Procedural detailed NN S1-inspired sedan and bridge geometry today; Blender art planned |
 | Hosting | Netlify or Vercel |
 | Source control | GitHub |
 
@@ -78,7 +78,7 @@ NaijaNitro/
 
 ## Deployment
 
-**The TypeScript migration is merged to `main`; the Camry/bridge graphics upgrade has been merged into `main` after passing CI, but gameplay still needs hands-on testing before public launch.** Prefer a private Netlify/Vercel preview until then.
+**The TypeScript migration is merged to `main`; the NN S1/bridge graphics upgrade has been merged into `main` after passing CI, but gameplay still needs hands-on testing before public launch.** Prefer a private Netlify/Vercel preview until then.
 
 For Netlify, select this branch and use the settings already in `netlify.toml`: build command `npm run build`, publish directory `dist`, Node 22.
 
@@ -100,7 +100,7 @@ Future pushes to `main` can trigger automatic deployments on connected hosting p
 - [ ] Expand AI with safe overtaking and actual vehicle physics
 - [ ] Migrate second legacy circuit and car selection
 - [x] Add improved stylized Third Mainland Bridge roadway, rails, supports, signs and Lagos skyline
-- [x] Add 2010 Camry Muscle-inspired 3D vehicle with lights, windows, wheels and trim
+- [x] Add fictional NN Street S1-inspired 3D vehicle with lights, windows, wheels and trim
 - [x] Add Nigeria-themed interactive 3D car showroom and live paint customization
 - [ ] Import production-quality Blender meshes and more recognizable Nigerian landmarks
 - [x] Add reactive synthesized engine, wind and nitro audio (Web Audio API)
@@ -113,15 +113,15 @@ Future pushes to `main` can trigger automatic deployments on connected hosting p
 
 No license has been selected. All rights are reserved by the repository owner unless a license is added.
 
-## Camry Muscle graphics upgrade (feature branch)
+## NN Street S1 graphics upgrade (feature branch)
 
-The vehicle is an **original procedural, stylized model inspired by the 2007–2011 Toyota Camry XV40**, popularly nicknamed *Camry Muscle* in Nigeria. No proprietary Toyota 3D asset is included. The surrounding track is a **fictional oval inspired by** Lagos's Third Mainland Bridge, not a geographically accurate recreation. Improvements include road lane markings, bridge deck, railings, piers, Lagos signs, lighting poles, water and a coastal skyline.
+The vehicle is an **original procedural, stylized model inspired by the 2007–2011 third-party manufacturer NN S1 fictional sedan**, popularly nicknamed *NN Street S1* in Nigeria. No proprietary third-party manufacturer 3D asset is included. The surrounding track is a **fictional oval inspired by** Lagos's Third Mainland Bridge, not a geographically accurate recreation. Improvements include road lane markings, bridge deck, railings, piers, Lagos signs, lighting poles, water and a coastal skyline.
 
-**Testing still needed:** actual browser appearance, mobile performance, collision stability and driving feedback. This code is not yet an asset-quality, licensed Toyota replica, and the bridge is not to scale.
+**Testing still needed:** actual browser appearance, mobile performance, collision stability and driving feedback. This code is not yet an asset-quality, licensed third-party manufacturer replica, and the bridge is not to scale.
 
 ## Cinematic racing update
 
-- **Opening screen:** Naija Nitro branding, playable launch CTA, controls help, Camry Muscle edition and Lagos track identity.
+- **Opening screen:** Naija Nitro branding, playable launch CTA, controls help, NN Street S1 edition and Lagos track identity.
 - **Race states:** menu → countdown → race → pause / finish with restart and return-to-menu actions.
 - **Nitro:** hold **W + Shift** (or GAS + NITRO) at speed while the meter has charge. Boost adds blue/cyan twin exhaust flames, glow, field-of-view expansion, motion streaks, screen tint, acceleration and a synth hiss. Meter recharges gradually and while drifting.
 - **Wind:** speed-dependent camera wind particles and a synthesized rushing-wind audio layer.
@@ -143,7 +143,7 @@ The vehicle is an **original procedural, stylized model inspired by the 2007–2
 
 The main menu now displays a new original 3D showroom inspired by Nigerian workshop culture, with national green-white-green accents, Lagos Racing Division branding, neon lighting, platform podium, detailed workshop bays, wheels and signage.
 
-- Rotate the XV40 Camry Muscle-inspired car using the arrow buttons.
+- Rotate the fictional sedan NN Street S1-inspired car using the arrow buttons.
 - Choose between six finishes: Pearl Silver, Lagos Green, Midnight Black, Sunset Red, Electric Blue and Champagne Gold.
 - Car paint is applied to both the showroom model and the in-race model, without changing physics.
 - See car performance stat bars, selected track, race event, and an 8-car race start button.
@@ -151,9 +151,9 @@ The main menu now displays a new original 3D showroom inspired by Nigerian works
 
 This is an early procedural **3D garage scene**, not a photorealistic licensed vehicle or a fully functional purchasing/upgrades system. The displayed performance ratings are illustrative. The main game uses the existing simplified physics and track while higher-fidelity models and customization are still being developed.
 
-## Camry Muscle reference-model revision
+## NN Street S1 reference-model revision
 
-The user-provided silver front three-quarter, black rear three-quarter and champagne front-closeup photos guide the new **procedural XV40 Camry Muscle-style** model. This update changes the actual Three.js vehicle mesh used in the garage and in races, including:
+The user-provided silver front three-quarter, black rear three-quarter and champagne front-closeup photos guide the new **procedural fictional sedan NN Street S1-style** model. This update changes the actual Three.js vehicle mesh used in the garage and in races, including:
 
 - Tapered three-box sedan profile, longer hood, sloping windscreen, roof and rear deck.
 - Swept headlights, amber corner lamps, grille outline, fog light accents, bumper intakes and plate recesses.
@@ -162,11 +162,11 @@ The user-provided silver front three-quarter, black rear three-quarter and champ
 - 5-spoke-style alloy wheels, rubber tyres, wheel-arch accents and reflective clearcoat paint.
 - Continued six-color customization with independently configurable materials for garage and race cars.
 
-**Accuracy and licensing:** This is an original stylized geometry approximation based on visual references, not a laser scan, official Toyota model, imported licensed mesh or photorealistic rendering. The photos themselves are not embedded. Geometry is constructed in TypeScript at runtime; a professionally made Blender/GLB model and hands-on visual QA will still be needed to reach premium commercial-game fidelity.
+**Accuracy and licensing:** This is an original stylized geometry approximation based on visual references, not a laser scan, official third-party manufacturer model, imported licensed mesh or photorealistic rendering. The photos themselves are not embedded. Geometry is constructed in TypeScript at runtime; a professionally made Blender/GLB model and hands-on visual QA will still be needed to reach premium commercial-game fidelity.
 
 ## Game-ready GLB asset pipeline
 
-The Camry Muscle now has a **real glTF/GLB asset pipeline** instead of relying exclusively on procedural Three.js meshes. `tools/build_camry.py` generates the original, lightweight XV40-inspired sedan using Python, NumPy and trimesh. GitHub Actions generates and commits `public/vehicles/camry_muscle_xv40.glb` on the feature branch.
+The NN Street S1 now has a **real glTF/GLB asset pipeline** instead of relying exclusively on procedural Three.js meshes. `tools/build_NN S1.py` generates the original, lightweight fictional sedan-inspired sedan using Python, NumPy and trimesh. GitHub Actions generates and commits `public/vehicles/NN S1_muscle_fictional sedan.glb` on the feature branch.
 
 The garage and race engine load the same GLB with Three.js `GLTFLoader`. Both retain a procedural fallback if the asset fails to load. Paint meshes and wheel geometry are named for customization and animation.
 
@@ -174,12 +174,21 @@ To rebuild the asset locally:
 
 ```bash
 python -m pip install numpy==2.1.3 trimesh==4.11.1
-python tools/build_camry.py
+python tools/build_NN S1.py
 npm run build
 ```
 
-This is a **game-ready, low-poly original 3D car asset**, not an official Toyota scan or photorealistic model. For commercial-level likeness and surface realism we will still need more detailed hand-built topology, texture maps, paint shading and browser visual testing. We don't embed the reference photos or Toyota emblems.
+This is a **game-ready, low-poly original 3D car asset**, not an official third-party manufacturer scan or photorealistic model. For commercial-level likeness and surface realism we will still need more detailed hand-built topology, texture maps, paint shading and browser visual testing. We don't embed the reference photos or third-party manufacturer emblems.
 
 ## Showroom lighting correction
 
-An October 2026 screenshot showed the procedural Camry looking extremely blocky and nearly black. The updated showroom adds a real reflected studio lighting environment (Three.js PMREM + RoomEnvironment), ACES filmic tone mapping, stronger ambient fill and a lower camera angle. These changes improve visibility of metallic paint but **do not solve the low-detail geometry**. A properly modeled and browser-reviewed vehicle is still required before we can claim racing-game-level fidelity.
+An October 2026 screenshot showed the procedural NN S1 looking extremely blocky and nearly black. The updated showroom adds a real reflected studio lighting environment (Three.js PMREM + RoomEnvironment), ACES filmic tone mapping, stronger ambient fill and a lower camera angle. These changes improve visibility of metallic paint but **do not solve the low-detail geometry**. A properly modeled and browser-reviewed vehicle is still required before we can claim racing-game-level fidelity.
+
+
+## Original vehicle policy (NN Street S1)
+
+**NN Street S1** is the fictional Naija Nitro launch vehicle. It has Naija Nitro-specific cyan lighting blades, an original lower aero kit, chrome trim, and a six-color garage paint palette. It is **not** advertised as a licensed, officially endorsed, or exact replica of any manufacturer's car.
+
+This project should not incorporate third-party manufacturer names, emblems, game interfaces, model files, textures, or recorded audio without authorization or an appropriate license. The previously generated model has been replaced in the active loading path by `public/vehicles/nn_s1.glb`.
+
+Graphics objective: high-quality PBR materials, proper model topology and realistic highlights. **Current quality remains prototype-level**, not Asphalt-quality; visual browser testing and a professionally refined mesh are still required.

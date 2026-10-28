@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 /**
  * Original game-ready procedural sedan inspired by the 2007–2011
- * Toyota Camry XV40 ("Camry Muscle" in Nigeria).
+ * fictional four-door NN Street S1 sports sedan.
  * Modelled from user-provided front, rear and side photo references.
  * Front faces -Z. No photographs, official logos, or third-party models are embedded.
  */
@@ -160,7 +160,7 @@ function createFront(g:THREE.Group,paint:THREE.MeshPhysicalMaterial){
   box(g,.48,.15,.045,whiteReverse,0,.85,-2.54);
 }
 function createRear(g:THREE.Group,paint:THREE.MeshPhysicalMaterial,brakes:THREE.Mesh[]){
-  // Continuous decklid, wide XV40-style horizontal tail lights.
+  // Distinctive horizontal NN S1 taillights.
   meshFaces(g,[[v(-.91,1.041,2.37),v(.91,1.041,2.37),v(.77,.944,2.53),v(-.77,.944,2.53)]],paint);
   strip(g,[v(-.87,1.035,2.39),v(0,1.055,2.49),v(.87,1.035,2.39)],chrome,.018);
   for(const s of [-1,1]){
@@ -190,6 +190,6 @@ export function createCamryMuscle():CarVisual{
     arch.position.set(side*1.085,.52,z);
     group.add(arch);
   }
-  group.userData.model='Camry Muscle 2010, XV40-inspired';
+  group.userData.model='NN Street S1 · Original Naija Nitro';
   return {group,wheels,brakeLights,paint};
 }

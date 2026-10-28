@@ -4,7 +4,7 @@ import { loadCamryModel } from './loadCamryModel';
 
 /**
  * Original Nigeria-inspired 3D garage for Naija Nitro.
- * The car is a procedural XV40-inspired sedan, not an official Toyota asset.
+ * The car is the original NN S1, an unbranded fictional sports sedan.
  * No downloaded assets, third-party branding, or protected game UI elements.
  */
 const GREEN = 0x29e69a;
@@ -136,7 +136,7 @@ export class GarageScene {
 
     this.textures.push(sign(room,['NAIJA NITRO','LAGOS RACING DIVISION'],16.2,4.1,3.1,6.7,12.06));
     this.textures.push(sign(room,['STREET TO TRACK','NAIJA BUILT. RACE READY.'],6.4,1.6,-10.5,3.4,12.05,'#3fbfea'));
-    this.textures.push(sign(room,['CAMRY MUSCLE','LAGOS EDITION'],6.4,1.6,15.5,3.4,12.05));
+    this.textures.push(sign(room,['NN STREET S1','LAGOS EDITION'],6.4,1.6,15.5,3.4,12.05));
 
     // A metal inspection podium with illuminated rings, car itself is raised only slightly.
     this.stage = new THREE.Group(); this.stage.position.set(2.25,.05,-.1);
@@ -195,7 +195,7 @@ export class GarageScene {
       this.camry.group.rotation.y = .28;
       this.pivot.add(this.camry.group);
     } catch (error) {
-      console.warn('Using procedural Camry showroom fallback:', error);
+      console.warn('Using NN S1 fallback:', error);
     }
   }
   setPaint(color:number) {this.camry.paint.color.setHex(color);}

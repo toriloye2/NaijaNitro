@@ -5,7 +5,7 @@ import type { CarVisual } from './CamryMuscle';
 /** Load optimized original GLB, with named mesh groups for paint and wheels. */
 export async function loadCamryModel(): Promise<CarVisual> {
   const loader = new GLTFLoader();
-  const gltf = await loader.loadAsync('/vehicles/camry_muscle_xv40.glb');
+  const gltf = await loader.loadAsync('/vehicles/nn_s1.glb');
   const group = gltf.scene;
   const bodyMeshes: THREE.Mesh[] = [];
   const brakeLights: THREE.Mesh[] = [];
@@ -28,7 +28,7 @@ export async function loadCamryModel(): Promise<CarVisual> {
     }
   });
   if (!bodyMeshes.length || wheelBuckets.size !== 4) {
-    throw new Error('Camry GLB is missing required named meshes');
+    throw new Error('NN S1 GLB is missing required named meshes');
   }
   for (const mesh of bodyMeshes) mesh.material = paint;
   // Retain groups at the actual wheel center, without changing the visual pose.
