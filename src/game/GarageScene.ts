@@ -83,9 +83,11 @@ export class GarageScene {
   constructor() {
     this.scene.background = new THREE.Color(0x09131d);
     this.scene.fog = new THREE.Fog(0x0b1822, 18, 60);
-    this.scene.add(new THREE.HemisphereLight(0xafd9e6, 0x151d24, 2.4));
+    this.scene.add(new THREE.HemisphereLight(0xeafaff, 0x5b7885, 3.6));
+    const ambientFill = new THREE.AmbientLight(0xd7efff, 1.1);
+    this.scene.add(ambientFill);
     const key = new THREE.SpotLight(0xe6f4ff, 190, 42, Math.PI/4, .63, 1.2);
-    key.position.set(1, 11, -7);
+    key.position.set(1, 8, -7);
     key.target.position.set(2, 0, 0);
     key.castShadow = false;
     this.scene.add(key, key.target);
@@ -179,8 +181,8 @@ export class GarageScene {
     cube(room,4.2,.11,.15,cyan,14.5,7.0,11.9);
     cube(room,4.2,.11,.15,green,14.5,6.65,11.9);
     cube(room,4.2,.11,.15,cyan,14.5,6.3,11.9);
-    this.camera.position.set(10.4,4.35,-11.6);
-    this.camera.lookAt(2.25,1.4,0);
+    this.camera.position.set(10.4,3.6,-10.3);
+    this.camera.lookAt(2.25,1.13,0);
     this.materials.push(...[wall,column,frame,cabinet,green,cyan,white,warm,tire]);
   }
 
