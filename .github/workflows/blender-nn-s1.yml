@@ -19,10 +19,11 @@ jobs:
       - name: Install Blender
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y blender
+          sudo apt-get install -y blender python3-numpy
           blender --version | head -3
+          PYTHONPATH=/usr/lib/python3/dist-packages blender --background --python-expr 'import numpy; print("NumPy available:", numpy.__version__)'
       - name: Model, export GLB, save Blender scene and render previews
-        run: blender --background --python tools/build_nn_s1_blender.py
+        run: PYTHONPATH=/usr/lib/python3/dist-packages blender --background --python tools/build_nn_s1_blender.py
       - name: Check exported assets
         run: |
           test -s public/vehicles/nn_s1.glb
