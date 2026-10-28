@@ -1,0 +1,51 @@
+name: Build Blender NN S1 and studio renders
+on:
+  pull_request:
+    paths:
+      - 'tools/build_nn_s1_blender.py'
+      - '.github/workflows/blender-nn-s1.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  blender:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          persist-credentials: true
+      - name: Install Blender
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender
+          blender --version | head -3
+      - name: Model, export GLB, save Blender scene and render previews
+        run: blender --background --python tools/build_nn_s1_blender.py
+      - name: Check exported assets
+        run: |
+          test -s public/vehicles/nn_s1.glb
+          test -s assets/blender/nn_s1.blend
+          test -s public/previews/nn_s1_front.png
+          test -s public/previews/nn_s1_rear.png
+          du -h public/vehicles/nn_s1.glb assets/blender/nn_s1.blend public/previews/*.png
+      - name: Upload previews and editable Blender scene
+        uses: actions/upload-artifact@v4
+        with:
+          name: nn-s1-blender-studio
+          path: |
+            public/vehicles/nn_s1.glb
+            assets/blender/nn_s1.blend
+            public/previews/nn_s1_front.png
+            public/previews/nn_s1_rear.png
+          retention-days: 30
+      - name: Commit updated game asset and preview images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/vehicles/nn_s1.glb assets/blender/nn_s1.blend public/previews/nn_s1_front.png public/previews/nn_s1_rear.png
+          if ! git diff --cached --quiet; then
+            git commit -m "build: publish Blender NN S1 mesh and studio renders"
+            git push
+          fi
