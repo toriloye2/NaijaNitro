@@ -6,7 +6,6 @@ import { createCamryMuscle, type CarVisual } from './CamryMuscle';
  * The car is a procedural XV40-inspired sedan, not an official Toyota asset.
  * No downloaded assets, third-party branding, or protected game UI elements.
  */
-const INK = 0x101b23;
 const GREEN = 0x29e69a;
 const CYAN = 0x2bbce8;
 const metal = (color: number, metalness = .55, roughness = .38) =>
