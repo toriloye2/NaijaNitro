@@ -192,3 +192,12 @@ An October 2026 screenshot showed the procedural NN S1 looking extremely blocky 
 This project should not incorporate third-party manufacturer names, emblems, game interfaces, model files, textures, or recorded audio without authorization or an appropriate license. The previously generated model has been replaced in the active loading path by `public/vehicles/nn_s1.glb`.
 
 Graphics objective: high-quality PBR materials, proper model topology and realistic highlights. **Current quality remains prototype-level**, not Asphalt-quality; visual browser testing and a professionally refined mesh are still required.
+
+
+## NN Street S1 premium visual iteration
+
+The original NN Street S1 now has a **new detailed procedural glTF model**, built by `tools/build_nn_s1.py`. The script exports `public/vehicles/nn_s1.glb`, used by both the racing engine and the 3D garage. It includes denser curved body panels, original front and rear lighting, layered alloy wheels, visible cabin furnishings, trim, grille details and clearcoat-capable PBR paint materials. The showroom camera has been repositioned for a more cinematic car presentation.
+
+Rebuild with `python tools/build_nn_s1.py` after installing the documented trimesh/NumPy dependencies. The asset-generation GitHub workflow validates and commits the exported GLB.
+
+**Quality boundary:** This is a more detailed browser-ready *prototype*, not a photorealistic or exact reference-image match. Browser rendering, visual proportions and device performance require hands-on review. All vehicle branding and geometry remain original to Naija Nitro.

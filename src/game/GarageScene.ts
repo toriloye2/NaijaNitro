@@ -82,7 +82,7 @@ export class GarageScene {
 
   constructor() {
     this.scene.background = new THREE.Color(0x09131d);
-    this.scene.fog = new THREE.Fog(0x0b1822, 18, 60);
+    this.scene.fog = new THREE.Fog(0x0b1822, 25, 75);
     this.scene.add(new THREE.HemisphereLight(0xeafaff, 0x5b7885, 3.6));
     const ambientFill = new THREE.AmbientLight(0xd7efff, 1.1);
     this.scene.add(ambientFill);
@@ -181,8 +181,9 @@ export class GarageScene {
     cube(room,4.2,.11,.15,cyan,14.5,7.0,11.9);
     cube(room,4.2,.11,.15,green,14.5,6.65,11.9);
     cube(room,4.2,.11,.15,cyan,14.5,6.3,11.9);
-    this.camera.position.set(10.4,3.6,-10.3);
-    this.camera.lookAt(2.25,1.13,0);
+    // Bring the car forward in frame, lower viewpoint for game-style hero composition.
+    this.camera.position.set(9.2,2.95,-9.1);
+    this.camera.lookAt(2.25,1.18,0);
     this.materials.push(...[wall,column,frame,cabinet,green,cyan,white,warm,tire]);
   }
 
@@ -210,7 +211,7 @@ export class GarageScene {
   }
   resize(width:number,height:number) {
     this.camera.aspect = Math.max(1,width) / Math.max(1,height);
-    this.camera.fov = width < 700 ? 58 : 46;
+    this.camera.fov = width < 700 ? 61 : 40;
     this.camera.updateProjectionMatrix();
   }
   dispose() {
