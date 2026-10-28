@@ -1,162 +1,106 @@
-<div align="center">
-
 # 🏎️ Naija Nitro 🇳🇬
-### Lagos Asphalt • Browser-Based Arcade Racing
 
-**Experience high-speed arcade racing on Nigeria-inspired circuits, straight from your browser.**
+**Lagos Asphalt** is a Nigeria-inspired browser arcade racing game. The ongoing migration replaces the original single-file JavaScript demo with a **TypeScript + Vite + Three.js + Rapier** codebase and a **React UI**.
 
-[Play locally](#-getting-started) · [Controls](#-controls) · [Deploy](#-deployment) · [Roadmap](#-roadmap)
+> **Migration branch / alpha:** This is a new driving-engine prototype, **not feature parity with v6.0.0**. The previous v6 game with two track options, cars and AI remains available on the `main` branch under `game/index.html`. The new engine currently has a single oval Lagos-inspired test circuit, one car, a timing HUD and physics-driven collision body. It has not yet been browser-tested.
 
-</div>
+## Technology
 
----
-
-## 🎮 About the Project
-
-**Naija Nitro** is an in-development browser racing project inspired by fast-paced arcade racers and the roads, architecture, and atmosphere of Nigeria. Its first game mode, **Lagos Asphalt**, focuses on **closed-course racing** rather than free roam.
-
-Our design priorities are:
-
-1. **Great car handling first:** responsive steering, satisfying drifting, braking and nitro.
-2. **Proper racing:** laps, checkpoints, opponents, positions and times.
-3. **A recognizable Nigerian identity:** highways, waterfront scenery, road signs and urban settings.
-4. **Fast browser performance:** no install required, playable on desktop with touch controls for mobile experimentation.
-
-> **Project status:** `v6.0.0` is a **prototype / release candidate**, **not a fully tested public release**. Tracks are stylized fictional interpretations, not geographically accurate reconstructions. Vehicle handling and AI are custom simplified systems. Gameplay, accessibility and device performance still need hands-on verification.
-
-## ✨ Current Features
-
-- 🌉 **Two Lagos-inspired circuits:** Third Mainland Sprint and Lagos Island Circuit
-- 🚘 **Three car profiles:** Street GT, Sport Coupe and Hyper RS
-- 🏁 **Game modes:** three-lap race and solo time trial
-- 🤖 **Three computer-controlled opponents** in race mode
-- ⚡ **Arcade driving:** acceleration, braking, drift, nitro and basic wall/vehicle collisions
-- ⏱️ **Race HUD:** countdown, speedometer, lap timer, checkpoints and position
-- 💾 **Best lap records:** saved locally in your browser (per track and car)
-- 📱 **Experimental touch controls** on touch-enabled devices
-
-## 🛠️ Tech Stack
-
-| Technology | Purpose |
+| Layer | Technology |
 |---|---|
-| HTML, CSS, JavaScript | Game interface, logic and controls |
-| [Three.js](https://threejs.org/) | 3D rendering |
-| Browser localStorage | Local lap records |
-| [Netlify](https://www.netlify.com/) or [Vercel](https://vercel.com/) | Static website hosting |
-| GitHub | Source code and version history |
+| Development | TypeScript + Vite |
+| Rendering | Three.js |
+| Physics | Rapier 3D WASM (rigid bodies, colliders, ground and barriers) |
+| UI | React |
+| Audio | Howler.js dependency (audio system not yet wired up) |
+| 3D art pipeline | Blender planned; procedural placeholder geometry today |
+| Hosting | Netlify or Vercel |
+| Source control | GitHub |
 
-The prototype currently uses Three.js from an external **ES module CDN**, so an internet connection is needed to load the game engine. There is **no build step** or backend.
+### Why Rapier?
 
-## 📁 Project Structure
+Rapier provides actual 3D rigid-body simulation and collision resolution, replacing the old geometry-only collision calculations. **This is not a full wheel/suspension simulation yet.** The steering, throttle, traction and drift response remain deliberately arcade-controlled. A raycast-wheel suspension controller, tire grip and weight transfer are future physics milestones.
+
+## Getting started
+
+Install **Node.js 22 or newer** and run:
+
+```bash
+git clone https://github.com/toriloye2/NaijaNitro.git
+cd NaijaNitro
+git checkout migration/vite-typescript-rapier
+npm install
+npm run dev
+```
+
+Open the local URL printed by Vite.
+
+### Build a production bundle
+
+```bash
+npm run build
+npm run preview
+```
+
+The built static site is generated into `dist/`.
+
+## Game controls
+
+| Action | Key |
+|---|---|
+| Accelerate | W / Up Arrow |
+| Brake | S / Down Arrow |
+| Steer | A/D or Left/Right Arrows |
+| Drift | Space |
+| Nitro | Shift |
+| Reset driving simulation | R |
+
+Touch input buttons are included for experimentation on touch-enabled devices.
+
+## Project structure
 
 ```text
 NaijaNitro/
-├── index.html         # Redirects visitors to /game/
-├── game/
-│   └── index.html     # Lagos Asphalt browser prototype
-├── netlify.toml       # Netlify publish configuration
-├── vercel.json        # Vercel configuration
-└── README.md          # Project documentation
+├── index.html                 # New Vite app entry
+├── src/
+│   ├── main.tsx               # React game HUD and touch controls
+│   ├── style.css              # Responsive UI
+│   └── game/
+│       └── NitroGame.ts       # Three.js / Rapier simulation
+├── game/index.html            # Legacy v6 single-file prototype
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+├── netlify.toml
+├── vercel.json
+└── README.md
 ```
 
-## 🚀 Getting Started
+## Deployment
 
-### Option A: VS Code Live Server
+**Do not deploy the migration branch to the public production site until the build and gameplay are tested.** Use a Netlify branch deploy / Vercel preview deployment first.
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/toriloye2/NaijaNitro.git
-   cd NaijaNitro
-   ```
-2. Open the project in **VS Code**.
-3. Install the **Live Server** extension if needed.
-4. Right-click `index.html` and choose **Open with Live Server**.
-5. Start a race using the in-game menu.
+For Netlify, select this branch and use the settings already in `netlify.toml`: build command `npm run build`, publish directory `dist`, Node 22.
 
-### Option B: Python HTTP server
+For Vercel, import the repo with Vite selected. Build with `npm run build` and output `dist`.
 
-From the repository root:
+When the migration is tested, merging the branch into `main` will trigger automatic deployment on connected hosting platforms.
 
-```bash
-python -m http.server 8000
-```
+## Roadmap
 
-Then visit **http://localhost:8000**.
+- [x] Vite + TypeScript project structure
+- [x] Three.js scene and Lagos-inspired test circuit
+- [x] Rapier rigid body and physical ground / guardrail colliders
+- [x] React HUD with keyboard and touch controls
+- [ ] Verify clean `npm install` / `npm run build` in CI
+- [ ] Browser gameplay smoke test and fix handling issues
+- [ ] Raycast-wheel suspension, tire grip and weight transfer
+- [ ] Migrate two legacy circuits, car selection, races and AI opponents
+- [ ] Add proper 3D Nigerian landmarks and Blender models
+- [ ] Hook up Howler engine, skid and collision audio
+- [ ] Test desktop / mobile FPS and accessibility
+- [ ] Merge stabilized version into `main`
 
-> Opening the HTML directly through `file://` is not recommended. Use a local HTTP server.
+## License
 
-## 🎮 Controls
-
-| Action | Keyboard |
-|---|---|
-| Accelerate | W / ↑ |
-| Brake / Reverse | S / ↓ |
-| Steer left | A / ← |
-| Steer right | D / → |
-| Drift | Space |
-| Nitro | Shift |
-| Pause / Resume | P |
-| Restart race | R |
-
-Touch-enabled devices display on-screen buttons. Mobile support is still experimental.
-
-## 🌐 Deployment
-
-The project can be deployed as a **static website**.
-
-### Netlify (recommended for first testing)
-
-1. Go to [Netlify](https://app.netlify.com/start) and select **Add new project / Import an existing project**.
-2. Connect **GitHub** and choose `toriloye2/NaijaNitro`.
-3. Use these settings:
-   - **Production branch:** `main`
-   - **Build command:** leave empty
-   - **Publish directory:** `.` (repository root)
-4. Click **Deploy**.
-5. Open the generated Netlify URL and verify the race loads.
-
-**Automatic updates:** Once Netlify is connected, pushing commits to `main` triggers a new deployment. Use development branches and merge tested updates into `main` to avoid publishing unfinished features.
-
-### Vercel
-
-Import this GitHub repository at [vercel.com/new](https://vercel.com/new). Select **Other** for the framework if prompted, leave the build command empty and deploy from the repository root.
-
-## 🗺️ Roadmap
-
-- [x] Browser racing prototype
-- [x] Two Nigeria-inspired circuits
-- [x] Selectable cars, nitro, drifting and lap timing
-- [x] Basic opponent AI
-- [ ] Hands-on browser testing and bug fixing
-- [ ] Improved tire traction, suspension and vehicle weight transfer
-- [ ] Improved AI racing lines, overtaking and collision avoidance
-- [ ] More detailed Nigerian track art and landmarks
-- [ ] Sound design, engine audio and effects
-- [ ] Mobile performance optimization
-- [ ] Full quality assurance before public launch
-- [ ] Online multiplayer (future phase)
-
-## 🔁 Development Workflow
-
-- **`main`:** release/testing deployments; keep it as stable as practical.
-- **Feature branches:** work on physics, circuits, visuals and game modes.
-- **Pull requests:** review and test changes before merging.
-- **Version tags:** label notable releases, for example `v6.0.0`, `v6.1.0` and `v7.0.0`.
-
-## 🤝 Contributing
-
-The game is under active early development. If you'd like to help, open an issue describing the bug or improvement, then propose a change through a pull request. Please avoid uploading unlicensed third-party car models, logos, music or visual assets.
-
-## 📄 License
-
-**No open-source license has been selected yet.** Source availability on GitHub does not automatically grant permission to reuse or redistribute the code. A license can be added once the project owner chooses one.
-
----
-
-<div align="center">
-
-**Built for the thrill of racing, with a Nigerian identity. 🇳🇬**
-
-*Naija Nitro • Lagos Asphalt*
-
-</div>
+No license has been selected. All rights are reserved by the repository owner unless a license is added.
