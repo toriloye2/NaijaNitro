@@ -3,6 +3,14 @@ import { createRoot } from 'react-dom/client';
 import { NitroGame, type Telemetry } from './game/NitroGame';
 import './style.css';
 
+const paints = [
+  { name:'Pearl Silver', color:0xd7dde4 },
+  { name:'Lagos Green', color:0x08b77d },
+  { name:'Midnight Black', color:0x202b38 },
+  { name:'Sunset Red', color:0xc52b3c },
+  { name:'Electric Blue', color:0x296de0 },
+  { name:'Champagne Gold', color:0xb59a66 },
+] as const;
 const blank: Telemetry = { speed:0, nitro:100, lap:1, time:0, status:'Loading', drift:false, boosting:false, phase:'menu', countdown:0, progress:0, position:8, rivals:8, bestLap:0, lapTime:0 };
 const formatted = (t:number) => {
   const minutes = String(Math.floor(t/60)).padStart(2,'0');
@@ -19,6 +27,8 @@ function App() {
   const [error,setError] = useState('');
   const [muted,setMuted] = useState(false);
   const [help,setHelp] = useState(false);
+  const [paintIndex,setPaintIndex] = useState(0);
+  const [garageTab,setGarageTab] = useState<'garage'|'race'|'customize'>('garage');
   useEffect(() => {
     if(!mount.current) return;
     let cancelled=false;
@@ -29,6 +39,7 @@ function App() {
   },[]);
   const begin=()=>{setHelp(false);void game.current?.start()};
   const touch=(key:string,value:boolean)=>game.current?.setTouch(key,value);
+  const selectPaint=(i:number)=>{setPaintIndex(i);game.current?.setPaint(paints[i].color)};
   const toggleSound=()=>{game.current?.setMuted(!muted);setMuted(!muted)};
   const active=info.phase==='race'||info.phase==='countdown'||info.phase==='paused'||info.phase==='finished';
   return <main className={info.boosting?'boosting':''}>
@@ -60,24 +71,48 @@ function App() {
       <div className="drift-indicator">{info.boosting?'⚡ BOOST ACTIVE':info.drift?'↝ DRIFTING':'SHIFT · NITRO / SPACE · DRIFT'}</div>
     </section>}
     {info.phase==='countdown'&&<div className="countdown" aria-live="polite">{info.countdown>0?Math.ceil(info.countdown):'GO!'}</div>}
-    {info.phase==='menu'&&<section className="front">
-      <div className="front-stripe"/>
-      <div className="front-content">
-        <p className="eyebrow">🇳🇬 AN ORIGINAL NIGERIAN RACING EXPERIENCE</p>
-        <h1 className="logo"><span>NAIJA</span><b>NITRO</b></h1>
-        <div className="title-rule"/>
-        <p className="subtitle">LAGOS ASPHALT <span>·</span> CAMRY MUSCLE EDITION · 8-CAR RACE</p>
-        <h2>OWN THE <em>STREETS.</em><br/>RULE THE RACE.</h2>
-        <p className="description">Take the Nigerian-favourite Camry Muscle across a stylized Third Mainland Bridge. Race seven opponents, collect nitro charges, unleash blue flames, and chase victory across the Lagos skyline.</p>
-        <div className="menu-buttons">
-          <button className="play-button" disabled={!ready||!!error} onClick={begin}>{error?'ENGINE ERROR':ready?'🏁 START RACE':'LOADING GAME...'}</button>
-          <button className="outline-button" onClick={()=>setHelp(v=>!v)}>{help?'CLOSE CONTROLS':'HOW TO PLAY'}</button>
+    {info.phase==='menu'&&<section className="garage-ui">
+      <div className="garage-shade"/>
+      <header className="garage-header">
+        <div className="garage-logo"><span>NAIJA</span><b>NITRO</b><small>🇳🇬 LAGOS RACING DIVISION</small></div>
+        <div className="garage-racer"><span className="garage-racer-icon">NN</span><span>STREET RACER<br/><strong>WELCOME TO LAGOS</strong></span></div>
+      </header>
+      <aside className="garage-side">
+        <span className="garage-eyebrow">YOUR GARAGE / 01</span>
+        <h1>THE <em>MUSCLE</em></h1>
+        <p className="garage-model">2010 CAMRY · XV40 INSPIRED</p>
+        <span className="garage-flag">🇳🇬 NIGERIA COLLECTION</span>
+        <div className="garage-stats">
+          <div><span>TOP SPEED</span><div className="stat-meter"><i style={{width:'78%'}}/></div><b>78</b></div>
+          <div><span>ACCELERATION</span><div className="stat-meter"><i style={{width:'72%'}}/></div><b>72</b></div>
+          <div><span>HANDLING</span><div className="stat-meter"><i style={{width:'66%'}}/></div><b>66</b></div>
+          <div><span>NITRO</span><div className="stat-meter"><i style={{width:'85%'}}/></div><b>85</b></div>
         </div>
-        {help&&<div className="help">W / ↑ Accelerate · S / ↓ Brake · A / D Steer · Space Drift · Shift Nitro · P Pause · R Restart</div>}
-        {error&&<p className="error" role="alert">{error}</p>}
-      </div>
-      <div className="edition"><strong>2010</strong><span>CAMRY MUSCLE<br/>LAGOS EDITION</span></div>
-      <footer className="front-footer">PROTOTYPE BUILD · THREE.JS + RAPIER · MADE FOR BROWSER RACING</footer>
+        <div className="garage-paint">
+          <span className="garage-eyebrow">PAINT FINISH <b>{paints[paintIndex].name.toUpperCase()}</b></span>
+          <div className="paint-options">{paints.map((p,i)=><button key={p.name}
+            className={i===paintIndex?'selected':''} aria-label={'Paint: '+p.name}
+            aria-pressed={i===paintIndex} title={p.name} style={{background:'#'+p.color.toString(16).padStart(6,'0')}}
+            onClick={()=>selectPaint(i)} />)}</div>
+        </div>
+      </aside>
+      <div className="garage-rotate"><button onClick={()=>game.current?.rotateShowroom(-1)} aria-label="Rotate car left">⟲</button><span>ROTATE CAR</span><button onClick={()=>game.current?.rotateShowroom(1)} aria-label="Rotate car right">⟳</button></div>
+      <aside className="garage-right">
+        <div className="location-tag"><span>TRACK 01</span><strong>THIRD MAINLAND BRIDGE</strong><small>LAGOS LAGOON · NIGERIA</small></div>
+        <div className="race-tile"><span>FEATURED EVENT</span><strong>THE LAGOS SPRINT</strong><small>8 RACERS · 3 LAPS · ARCADE</small></div>
+        {garageTab==='customize'&&<div className="garage-info">Select a paint finish on the left to change your Camry. More upgrades are planned.</div>}
+        {garageTab==='race'&&<div className="garage-info">Three laps, seven rivals, nitro pickups. Win the Lagos Sprint!</div>}
+        {help&&<div className="garage-info">W / ↑ Accelerate · S / ↓ Brake · A / D Steer · Space Drift · Shift Nitro · P Pause · R Restart</div>}
+      </aside>
+      <nav className="garage-nav">
+        <button className={garageTab==='garage'?'active':''} onClick={()=>{setGarageTab('garage');setHelp(false)}}>⌂ <span>GARAGE</span></button>
+        <button className={garageTab==='customize'?'active':''} onClick={()=>{setGarageTab('customize');setHelp(false)}}>◈ <span>CUSTOMIZE</span></button>
+        <button onClick={()=>setHelp(v=>!v)}>ⓘ <span>CONTROLS</span></button>
+        <button className="garage-race" disabled={!ready||!!error} onClick={begin}>
+          {error?'ENGINE ERROR':ready?'🏁 RACE NOW':'LOADING...'}
+        </button>
+      </nav>
+      {error&&<p className="garage-error" role="alert">{error}</p>}
     </section>}
     {info.phase==='paused'&&<section className="modal-overlay">
       <div className="modal"><p className="eyebrow">LAGOS ASPHALT</p><h2>RACE PAUSED</h2><p>Your Camry is ready when you are.</p>

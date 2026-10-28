@@ -10,9 +10,10 @@ export interface CarVisual {
   group: THREE.Group;
   wheels: THREE.Group[];
   brakeLights: THREE.Mesh[];
+  paint: THREE.MeshPhysicalMaterial;
 }
 
-const paint = new THREE.MeshPhysicalMaterial({
+const paintBase = new THREE.MeshPhysicalMaterial({
   color: 0xd7dde4, metalness: 0.67, roughness: 0.31, clearcoat: 0.55, clearcoatRoughness: 0.19,
   flatShading: false,
 });
@@ -98,6 +99,8 @@ function wheel(parent: THREE.Group, x: number, z: number): THREE.Group {
 }
 
 export function createCamryMuscle(): CarVisual {
+  // Each car owns a separate paint material, so showroom customization updates racing color safely.
+  const paint = paintBase.clone();
   const group = new THREE.Group();
   const wheels: THREE.Group[] = [];
   const brakeLights: THREE.Mesh[] = [];
@@ -164,5 +167,5 @@ export function createCamryMuscle(): CarVisual {
   cube(group,[1.9,.023,.05],[0,1.12,2.35],chrome);
   group.userData.model = '2010 Toyota Camry XV40-inspired Muscle';
   group.userData.materials = { red, redLit };
-  return { group, wheels, brakeLights };
+  return { group, wheels, brakeLights, paint };
 }
