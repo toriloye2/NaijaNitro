@@ -2,8 +2,11 @@ import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat';
 import { createCamryMuscle } from './CamryMuscle';
 import { createThirdMainland } from './ThirdMainland';
+import { SpeedEffects } from './SpeedEffects';
+import { EngineAudio } from './EngineAudio';
 
-export type Telemetry = { speed: number; nitro: number; lap: number; time: number; status: string; drift: boolean };
+export type GamePhase = 'menu' | 'countdown' | 'race' | 'paused' | 'finished';
+export type Telemetry = { speed: number; nitro: number; lap: number; time: number; status: string; drift: boolean; boosting: boolean; phase: GamePhase; countdown: number; progress: number };
 type Controls = 'left' | 'right' | 'gas' | 'brake' | 'drift' | 'nitro';
 const clamp = THREE.MathUtils.clamp;
 const ROAD_RADIUS_X = 115;
@@ -17,6 +20,12 @@ export class NitroGame {
   private chassis!: RAPIER.RigidBody;
   private car!: THREE.Group;
   private wheels: THREE.Group[] = [];
+  private effects: SpeedEffects | null = null;
+  private sound = new EngineAudio();
+  private phase: GamePhase = 'menu';
+  private countdown = 0;
+  private boosting = false;
+  private lastTelemetryTime = 0;
   private keys = new Set<string>();
   private touches = new Set<string>();
   private animation = 0;
@@ -38,7 +47,8 @@ export class NitroGame {
   private readonly onKeyDown = (e: KeyboardEvent) => {
     if (['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)) e.preventDefault();
     this.keys.add(e.code);
-    if (e.code === 'KeyR' && !e.repeat) { this.reset(); this.active = true; this.status = 'Racing'; }
+    if (e.code === 'KeyR' && !e.repeat) void this.start();
+    if (e.code === 'KeyP' && !e.repeat) this.togglePause();
   };
   private readonly onKeyUp = (e: KeyboardEvent) => this.keys.delete(e.code);
   private readonly onResize = () => this.resize();
@@ -68,6 +78,7 @@ export class NitroGame {
     this.car = camry.group;
     this.wheels = camry.wheels;
     this.scene.add(this.car);
+    this.effects = new SpeedEffects(this.scene, this.camera, this.car);
     this.chassis = this.world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(ROAD_RADIUS_X, 1.5, 0).setLinearDamping(.3).setAngularDamping(2).lockRotations());
     this.world.createCollider(RAPIER.ColliderDesc.cuboid(1.15, .45, 2.25).setFriction(1.1).setRestitution(.05), this.chassis);
     this.reset();
@@ -77,18 +88,43 @@ export class NitroGame {
   }
   private pressed(key: Controls) { return this.touches.has(key) || this.input[key].some(c => this.keys.has(c)); }
   setTouch(key: string, value: boolean) { if (value) this.touches.add(key); else this.touches.delete(key); }
-  start() { if (!this.ready) return; this.reset(); this.active = true; this.status = 'Racing'; }
+  async start() {
+    if (!this.ready) return;
+    this.reset();
+    this.phase = 'countdown';
+    this.countdown = 3.1;
+    this.status = 'Get ready';
+    try { await this.sound.start(); } catch { /* Audio is optional; the race still works. */ }
+  }
+  togglePause() {
+    if (this.phase === 'race') {
+      this.phase = 'paused'; this.active = false; this.status = 'Paused';
+    } else if (this.phase === 'paused') {
+      this.phase = 'countdown'; this.countdown = 1.2; this.status = 'Resume';
+    }
+  }
+  setMuted(value: boolean) { this.sound.setMuted(value); }
+  backToMenu() { this.reset(); this.phase = 'menu'; this.status = 'Ready'; }
+
   reset() {
     if (!this.chassis) return;
     this.active = false; this.speed = 0; this.side = 0; this.yaw = Math.PI; this.nitro = 100;
-    this.elapsed = 0; this.lap = 1; this.lastAngle = 0; this.progress = 0;
+    this.elapsed = 0; this.lap = 1; this.lastAngle = 0; this.progress = 0; this.boosting = false;
     this.chassis.setTranslation({ x: ROAD_RADIUS_X, y: 1.6, z: 0 }, true);
     this.chassis.setLinvel({ x: 0, y: 0, z: 0 }, true);
     this.chassis.setAngvel({ x: 0, y: 0, z: 0 }, true);
     this.chassis.setRotation({ x: 0, y: Math.sin(this.yaw / 2), z: 0, w: Math.cos(this.yaw / 2) }, true);
   }
   private tick(dt: number) {
-    if (!this.active) { this.world.step(); this.sync(); return; }
+    if (this.phase === 'countdown') {
+      this.countdown -= dt;
+      if (this.countdown <= 0) {
+        this.phase = 'race';
+        this.active = true;
+        this.status = 'GO!';
+      }
+    }
+    if (!this.active) { this.world.step(); this.sync(); this.boosting = false; return; }
     this.elapsed += dt;
     const p = this.chassis.translation();
     const angle = Math.atan2(p.z / ROAD_RADIUS_Z, p.x / ROAD_RADIUS_X);
@@ -97,6 +133,7 @@ export class NitroGame {
     let headingError = Math.atan2(Math.sin(desiredHeading - this.yaw), Math.cos(desiredHeading - this.yaw));
     const gas = this.pressed('gas'), brake = this.pressed('brake'), drifting = this.pressed('drift');
     const boosting = gas && this.pressed('nitro') && this.nitro > 0 && this.speed > 8;
+    this.boosting = boosting;
     const maxSpeed = boosting ? 92 : 69;
     if (gas) this.speed += (boosting ? 53 : 32) * dt;
     if (brake) this.speed -= (this.speed > 0 ? 52 : 12) * dt;
@@ -130,7 +167,7 @@ export class NitroGame {
     this.lastAngle = angle;
     if (this.progress >= Math.PI * 2 - .12 && Math.abs(angle) < .19) {
       this.progress = 0; this.lap++;
-      if (this.lap > 3) { this.active = false; this.status = 'Race finished · press R to reset'; }
+      if (this.lap > 3) { this.active = false; this.phase = 'finished'; this.status = 'Finish line!'; }
     }
     if (p.y < -5) this.reset();
     this.sync();
@@ -154,9 +191,17 @@ export class NitroGame {
     const forward = new THREE.Vector3(-Math.sin(this.yaw), 0, -Math.cos(this.yaw));
     const target = this.car.position.clone().addScaledVector(forward, -11.7).add(new THREE.Vector3(0, 4.6, 0));
     this.camera.position.lerp(target, Math.min(1, dt * 5));
+    this.camera.fov = THREE.MathUtils.damp(this.camera.fov, 65 + Math.min(13,Math.abs(this.speed)*.095) + (this.boosting ? 9 : 0), 4,dt);
+    this.camera.updateProjectionMatrix();
     this.camera.lookAt(this.car.position.clone().addScaledVector(forward, 15).add(new THREE.Vector3(0, 1.35, 0)));
+    this.effects?.update(dt,this.speed,this.boosting,now*.001);
+    this.sound.update(this.speed,this.boosting,this.phase==='race');
     this.renderer.render(this.scene, this.camera);
-    this.onTelemetry({ speed: this.speed, nitro: this.nitro, lap: Math.min(this.lap, 3), time: this.elapsed, status: this.status, drift: this.pressed('drift') });
+    if (now - this.lastTelemetryTime > 45 || this.phase === 'countdown') {
+      this.lastTelemetryTime = now;
+      this.onTelemetry({ speed: this.speed, nitro: this.nitro, lap: Math.min(this.lap, 3), time: this.elapsed, status: this.status,
+        drift: this.pressed('drift'), boosting: this.boosting, phase: this.phase, countdown: this.countdown, progress: this.progress / (Math.PI * 2) });
+    }
   };
   private resize() {
     const w = this.host.clientWidth || innerWidth, h = this.host.clientHeight || innerHeight;
@@ -169,6 +214,8 @@ export class NitroGame {
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('keyup', this.onKeyUp);
     window.removeEventListener('blur', this.onBlur);
+    this.effects?.dispose(); this.effects = null;
+    this.sound.dispose();
     this.renderer.dispose(); this.renderer.domElement.remove();
     this.scene.traverse(obj => { if (obj instanceof THREE.Mesh) { obj.geometry.dispose(); const materials = Array.isArray(obj.material) ? obj.material : [obj.material]; materials.forEach(m => m.dispose()); } });
     if (this.world) this.world.free();
