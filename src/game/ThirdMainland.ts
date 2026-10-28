@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat';
 import { makeAsphaltMaterial, addRaceDecor } from './RoadSurface';
 import { decorateLagoon } from './LagoonDecor';
+import { addLagosStreetscape } from './LagosStreetscape';
 
 const RX = 115, RZ = 75, WIDTH = 27;
 const mat = (color: number, metalness = 0, roughness = .82) =>
@@ -127,16 +128,8 @@ export function createThirdMainland(scene: THREE.Scene,world:RAPIER.World) {
       box(scene,21,.5,2.8,concrete,p.x,-.45,p.z,p.yaw);
     }
   }
-  // Lagos distant skyline, with wider varied building shapes and shorter coastal blocks.
-  const buildingColors=[0x8dabad,0xb5b5a7,0x769ca4,0xa2b6b6,0xc3b39c,0x5d8f91];
-  for(let i=0;i<85;i++){
-    const side=i%2===0?1:-1;
-    const x=(i*37%470)-235, z=side*(260+(i%6)*21);
-    const h=7+(i*19%60);
-    const m=mat(buildingColors[i%buildingColors.length],.16,.7);
-    box(scene,9+(i%4)*4,h,11+(i%3)*5,m,x,h/2-2.8,z);
-    if(i%5===0)box(scene,13,.5,15,steel,x,h-2.4,z);
-  }
+  // Detailed Nigerian storefronts, balconies, window geometry and vegetation.
+  addLagosStreetscape(scene);
   const signage=[
     {a:.12,text:'THIRD MAINLAND BRIDGE'},
     {a:2.05,text:'LAGOS ISLAND'},
