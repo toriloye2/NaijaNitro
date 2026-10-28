@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat';
+import { createCamryMuscle } from './CamryMuscle';
+import { createThirdMainland } from './ThirdMainland';
 
 export type Telemetry = { speed: number; nitro: number; lap: number; time: number; status: string; drift: boolean };
 type Controls = 'left' | 'right' | 'gas' | 'brake' | 'drift' | 'nitro';
@@ -10,11 +12,12 @@ const ROAD_WIDTH = 27;
 
 export class NitroGame {
   private scene = new THREE.Scene();
-  private camera = new THREE.PerspectiveCamera(68, 1, 0.1, 800);
+  private camera = new THREE.PerspectiveCamera(65, 1, 0.1, 800);
   private renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
   private world!: RAPIER.World;
   private chassis!: RAPIER.RigidBody;
   private car!: THREE.Group;
+  private wheels: THREE.Group[] = [];
   private keys = new Set<string>();
   private touches = new Set<string>();
   private animation = 0;
@@ -61,65 +64,10 @@ export class NitroGame {
     this.scene.add(new THREE.HemisphereLight(0xffffff, 0x5d899b, 2.4));
     const sun = new THREE.DirectionalLight(0xffecc4, 2.1);
     sun.position.set(-80, 120, 50); this.scene.add(sun);
-    const material = (hex: number) => new THREE.MeshStandardMaterial({ color: hex, roughness: .85 });
-    const roadMat = material(0x343b44), stripe = material(0xf7f0d8), guard = material(0xc4cad0);
-    const water = new THREE.Mesh(new THREE.PlaneGeometry(1100, 1100), material(0x2488a8));
-    water.rotation.x = -Math.PI / 2; water.position.y = -.75; this.scene.add(water);
-    const island = new THREE.Mesh(new THREE.CylinderGeometry(48, 48, .4, 80), material(0x618a6d));
-    island.position.y = -.4; island.scale.set(1.5, 1, 1); this.scene.add(island);
-    const vertices: number[] = [], indices: number[] = [];
-    const segments = 240;
-    for (let i = 0; i <= segments; i++) {
-      const t = i / segments * Math.PI * 2;
-      const x = Math.cos(t), z = Math.sin(t);
-      for (let s of [-1, 1]) vertices.push((ROAD_RADIUS_X + s * ROAD_WIDTH / 2) * x, .05, (ROAD_RADIUS_Z + s * ROAD_WIDTH / 2) * z);
-      if (i < segments) { const j = 2 * i; indices.push(j, j + 2, j + 1, j + 1, j + 2, j + 3); }
-    }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-    geo.setIndex(indices); geo.computeVertexNormals();
-    const track = new THREE.Mesh(geo, roadMat); track.material.side = THREE.DoubleSide; this.scene.add(track);
-    // Solid horizontal ground beneath the track. Guard rails are physical Rapier colliders.
-    const ground = this.world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(0, -.35, 0));
-    this.world.createCollider(RAPIER.ColliderDesc.cuboid(600, .3, 600).setFriction(1.2), ground);
-    for (let i = 0; i < segments; i += 4) {
-      const a = i / segments * Math.PI * 2;
-      const tangent = Math.atan2(-ROAD_RADIUS_Z * Math.sin(a), ROAD_RADIUS_X * Math.cos(a));
-      for (const sign of [-1, 1]) {
-        const x = (ROAD_RADIUS_X + sign * (ROAD_WIDTH / 2 + .6)) * Math.cos(a);
-        const z = (ROAD_RADIUS_Z + sign * (ROAD_WIDTH / 2 + .6)) * Math.sin(a);
-        const barrier = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.4, 4.5), guard);
-        barrier.position.set(x, .7, z);
-        barrier.rotation.y = -tangent;
-        this.scene.add(barrier);
-        const fixed = this.world.createRigidBody(RAPIER.RigidBodyDesc.fixed().setTranslation(x, .7, z).setRotation({ x: 0, y: Math.sin(-tangent / 2), z: 0, w: Math.cos(-tangent / 2) }));
-        this.world.createCollider(RAPIER.ColliderDesc.cuboid(.6, .7, 2.25).setFriction(.4), fixed);
-      }
-    }
-    for (let i = 0; i < 80; i++) {
-      const theta = i * 2.4, radius = 180 + (i % 11) * 10;
-      const h = 12 + ((i * 17) % 55);
-      const building = new THREE.Mesh(new THREE.BoxGeometry(9 + i % 4 * 3, h, 10 + i % 3 * 2), material([0x92aab2, 0xc5b5a5, 0x6f929d][i % 3]));
-      building.position.set(Math.cos(theta) * radius, h / 2 - .75, Math.sin(theta) * radius);
-      this.scene.add(building);
-    }
-    for (let i = 0; i < 70; i++) {
-      const a = i * Math.PI * 2 / 70;
-      const dash = new THREE.Mesh(new THREE.BoxGeometry(.22, .02, 3.8), stripe);
-      dash.position.set(ROAD_RADIUS_X * Math.cos(a), .09, ROAD_RADIUS_Z * Math.sin(a));
-      dash.rotation.y = -Math.atan2(-ROAD_RADIUS_Z * Math.sin(a), ROAD_RADIUS_X * Math.cos(a));
-      this.scene.add(dash);
-    }
-    this.car = new THREE.Group();
-    const body = new THREE.Mesh(new THREE.BoxGeometry(2.3, .7, 4.5), material(0x36efa7));
-    body.position.y = .8; this.car.add(body);
-    const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.9, .65, 2.1), material(0x102b39));
-    cabin.position.set(0, 1.4, .25); this.car.add(cabin);
-    for (const x of [-1.13, 1.13]) for (const z of [-1.45, 1.45]) {
-      const wheel = new THREE.Mesh(new THREE.CylinderGeometry(.5, .5, .32, 16), material(0x151d22));
-      wheel.rotation.z = Math.PI / 2;
-      wheel.position.set(x, .48, z); this.car.add(wheel);
-    }
+    createThirdMainland(this.scene, this.world);
+    const camry = createCamryMuscle();
+    this.car = camry.group;
+    this.wheels = camry.wheels;
     this.scene.add(this.car);
     this.chassis = this.world.createRigidBody(RAPIER.RigidBodyDesc.dynamic().setTranslation(ROAD_RADIUS_X, 1.5, 0).setLinearDamping(.3).setAngularDamping(2).lockRotations());
     this.world.createCollider(RAPIER.ColliderDesc.cuboid(1.15, .45, 2.25).setFriction(1.1).setRestitution(.05), this.chassis);
@@ -192,6 +140,7 @@ export class NitroGame {
     if (!this.car || !this.chassis) return;
     const p = this.chassis.translation();
     this.car.position.set(p.x, p.y - .43, p.z);
+    for (const wheel of this.wheels) wheel.rotation.x -= this.speed / 60 / .49;
     const rotation = this.chassis.rotation();
     this.car.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
   }
@@ -204,9 +153,9 @@ export class NitroGame {
     while (this.accumulator >= 1 / 60 && ticks++ < 4) { this.tick(1 / 60); this.accumulator -= 1 / 60; }
     if (ticks > 4) this.accumulator = 0;
     const forward = new THREE.Vector3(-Math.sin(this.yaw), 0, -Math.cos(this.yaw));
-    const target = this.car.position.clone().addScaledVector(forward, -14).add(new THREE.Vector3(0, 8, 0));
+    const target = this.car.position.clone().addScaledVector(forward, -11.7).add(new THREE.Vector3(0, 4.6, 0));
     this.camera.position.lerp(target, Math.min(1, dt * 5));
-    this.camera.lookAt(this.car.position.clone().addScaledVector(forward, 12).add(new THREE.Vector3(0, 1, 0)));
+    this.camera.lookAt(this.car.position.clone().addScaledVector(forward, 15).add(new THREE.Vector3(0, 1.35, 0)));
     this.renderer.render(this.scene, this.camera);
     this.onTelemetry({ speed: this.speed, nitro: this.nitro, lap: Math.min(this.lap, 3), time: this.elapsed, status: this.status, drift: this.pressed('drift') });
   };
