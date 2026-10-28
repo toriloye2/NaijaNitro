@@ -2,7 +2,7 @@
 
 **Lagos Asphalt** is a Nigeria-inspired browser arcade racing game. The ongoing migration replaces the original single-file JavaScript demo with a **TypeScript + Vite + Three.js + Rapier** codebase and a **React UI**.
 
-> **Current main-branch alpha:** This is a new driving-engine prototype, **not feature parity with v6.0.0**. The previous v6 game with two track options, cars and AI remains available on the `main` branch under `game/index.html`. The new engine currently has an upgraded Third Mainland Bridge-inspired oval test circuit, a procedural 2010 Camry Muscle-inspired sedan, a timing HUD and Rapier rigid-body collision handling. It has not yet been browser-tested.
+> **Current main-branch alpha:** This is a new driving-engine prototype, **not feature parity with v6.0.0**. The previous v6 game with two track options, cars and AI remains available on the `main` branch under `game/index.html`. The new engine currently has an upgraded Third Mainland Bridge-inspired oval test circuit, a procedural 2010 Camry Muscle-inspired sedan, a timing HUD and Rapier rigid-body collision handling. Automated build checks pass, but this graphics update still needs hands-on browser testing.
 
 ## Technology
 
@@ -77,7 +77,7 @@ NaijaNitro/
 
 ## Deployment
 
-**The TypeScript migration is merged to `main`; the Camry/bridge upgrade is being tested on a feature branch, but gameplay still needs hands-on testing before public launch.** Prefer a private Netlify/Vercel preview until then.
+**The TypeScript migration is merged to `main`; the Camry/bridge graphics upgrade has been merged into `main` after passing CI, but gameplay still needs hands-on testing before public launch.** Prefer a private Netlify/Vercel preview until then.
 
 For Netlify, select this branch and use the settings already in `netlify.toml`: build command `npm run build`, publish directory `dist`, Node 22.
 
