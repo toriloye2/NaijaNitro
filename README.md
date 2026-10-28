@@ -2,7 +2,7 @@
 
 **Lagos Asphalt** is a Nigeria-inspired browser arcade racing game. The ongoing migration replaces the original single-file JavaScript demo with a **TypeScript + Vite + Three.js + Rapier** codebase and a **React UI**.
 
-> **Migration branch / alpha:** This is a new driving-engine prototype, **not feature parity with v6.0.0**. The previous v6 game with two track options, cars and AI remains available on the `main` branch under `game/index.html`. The new engine currently has a single oval Lagos-inspired test circuit, one car, a timing HUD and physics-driven collision body. It has not yet been browser-tested.
+> **Current main-branch alpha:** This is a new driving-engine prototype, **not feature parity with v6.0.0**. The previous v6 game with two track options, cars and AI remains available on the `main` branch under `game/index.html`. The new engine currently has a single oval Lagos-inspired test circuit, one car, a timing HUD and physics-driven collision body. It has not yet been browser-tested.
 
 ## Technology
 
@@ -28,7 +28,6 @@ Install **Node.js 22 or newer** and run:
 ```bash
 git clone https://github.com/toriloye2/NaijaNitro.git
 cd NaijaNitro
-git checkout migration/vite-typescript-rapier
 npm install
 npm run dev
 ```
@@ -78,13 +77,13 @@ NaijaNitro/
 
 ## Deployment
 
-**Do not deploy the migration branch to the public production site until the build and gameplay are tested.** Use a Netlify branch deploy / Vercel preview deployment first.
+**The TypeScript migration is now merged to `main`, but gameplay still needs hands-on testing before public launch.** Prefer a private Netlify/Vercel preview until then.
 
 For Netlify, select this branch and use the settings already in `netlify.toml`: build command `npm run build`, publish directory `dist`, Node 22.
 
 For Vercel, import the repo with Vite selected. Build with `npm run build` and output `dist`.
 
-When the migration is tested, merging the branch into `main` will trigger automatic deployment on connected hosting platforms.
+Future pushes to `main` can trigger automatic deployments on connected hosting platforms.
 
 ## Roadmap
 
