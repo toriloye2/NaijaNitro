@@ -23,11 +23,11 @@ function App() {
   return <main>
     <div ref={canvasHost} className="viewport" />
     <header className="hud">
-      <div className="panel"><h1>NAIJA <span>NITRO</span></h1><small>🇳🇬 LAGOS ASPHALT · PHYSICS MIGRATION</small><p>LAP {info.lap} / 3</p><p>{info.status}</p></div>
-      <div className="panel right"><small>RACE TIME</small><strong>{Math.floor(info.time / 60).toString().padStart(2, '0')}:{(info.time % 60).toFixed(2).padStart(5, '0')}</strong><small>THIRD MAINLAND TEST CIRCUIT</small></div>
+      <div className="panel"><h1>NAIJA <span>NITRO</span></h1><small>🇳🇬 LAGOS ASPHALT · CAMRY MUSCLE EDITION</small><p>LAP {info.lap} / 3</p><p>{info.status}</p></div>
+      <div className="panel right"><small>RACE TIME</small><strong>{Math.floor(info.time / 60).toString().padStart(2, '0')}:{(info.time % 60).toFixed(2).padStart(5, '0')}</strong><small>THIRD MAINLAND BRIDGE · LAGOS</small></div>
     </header>
     <div className="speed panel"><strong>{Math.round(info.speed * 3.6)}</strong> KM/H<div className="bar"><div style={{ width: info.nitro + '%' }} /></div><small>{info.drift ? 'DRIFT' : 'NITRO'} · {Math.round(info.nitro)}%</small></div>
-    {!started && <section className="overlay"><div className="welcome"><h2>NAIJA NITRO</h2><p>Real rigid-body collisions with Rapier, rendered in Three.js. Drive a Lagos-inspired test circuit.</p><button disabled={!ready} onClick={start}>{error ? 'ENGINE ERROR' : ready ? 'START DRIVING' : 'LOADING PHYSICS...'}</button>{error && <p role="alert">{error}</p>}<p className="hint">WASD / Arrows · Space drift · Shift nitro · R reset</p></div></section>}
+    {!started && <section className="overlay"><div className="welcome"><h2>NAIJA NITRO</h2><p>Drive the Nigerian-favourite 2010 Camry Muscle on a more detailed Third Mainland Bridge-inspired race circuit.</p><button disabled={!ready} onClick={start}>{error ? 'ENGINE ERROR' : ready ? 'START DRIVING' : 'LOADING PHYSICS...'}</button>{error && <p role="alert">{error}</p>}<p className="hint">WASD / Arrows · Space drift · Shift nitro · R reset</p></div></section>}
     <nav className="touch" aria-label="Touch driving controls">{[['left','◀'],['right','▶'],['gas','GAS'],['brake','BRAKE'],['drift','DRIFT'],['nitro','NITRO']].map(([key,label]) => <button key={key} onPointerDown={e => { e.currentTarget.setPointerCapture(e.pointerId); touch(key,true); }} onPointerUp={() => touch(key,false)} onPointerCancel={() => touch(key,false)} onLostPointerCapture={() => touch(key,false)}>{label}</button>)}</nav>
   </main>;
 }

@@ -2,7 +2,7 @@
 
 **Lagos Asphalt** is a Nigeria-inspired browser arcade racing game. The ongoing migration replaces the original single-file JavaScript demo with a **TypeScript + Vite + Three.js + Rapier** codebase and a **React UI**.
 
-> **Current main-branch alpha:** This is a new driving-engine prototype, **not feature parity with v6.0.0**. The previous v6 game with two track options, cars and AI remains available on the `main` branch under `game/index.html`. The new engine currently has a single oval Lagos-inspired test circuit, one car, a timing HUD and physics-driven collision body. It has not yet been browser-tested.
+> **Current main-branch alpha:** This is a new driving-engine prototype, **not feature parity with v6.0.0**. The previous v6 game with two track options, cars and AI remains available on the `main` branch under `game/index.html`. The new engine currently has an upgraded Third Mainland Bridge-inspired oval test circuit, a procedural 2010 Camry Muscle-inspired sedan, a timing HUD and Rapier rigid-body collision handling. It has not yet been browser-tested.
 
 ## Technology
 
@@ -13,7 +13,7 @@
 | Physics | Rapier 3D WASM (rigid bodies, colliders, ground and barriers) |
 | UI | React |
 | Audio | Howler.js dependency (audio system not yet wired up) |
-| 3D art pipeline | Blender planned; procedural placeholder geometry today |
+| 3D art pipeline | Procedural detailed Camry-inspired sedan and bridge geometry today; Blender art planned |
 | Hosting | Netlify or Vercel |
 | Source control | GitHub |
 
@@ -77,7 +77,7 @@ NaijaNitro/
 
 ## Deployment
 
-**The TypeScript migration is now merged to `main`, but gameplay still needs hands-on testing before public launch.** Prefer a private Netlify/Vercel preview until then.
+**The TypeScript migration is merged to `main`; the Camry/bridge upgrade is being tested on a feature branch, but gameplay still needs hands-on testing before public launch.** Prefer a private Netlify/Vercel preview until then.
 
 For Netlify, select this branch and use the settings already in `netlify.toml`: build command `npm run build`, publish directory `dist`, Node 22.
 
@@ -95,7 +95,9 @@ Future pushes to `main` can trigger automatic deployments on connected hosting p
 - [ ] Browser gameplay smoke test and fix handling issues
 - [ ] Raycast-wheel suspension, tire grip and weight transfer
 - [ ] Migrate two legacy circuits, car selection, races and AI opponents
-- [ ] Add proper 3D Nigerian landmarks and Blender models
+- [x] Add improved stylized Third Mainland Bridge roadway, rails, supports, signs and Lagos skyline
+- [x] Add 2010 Camry Muscle-inspired 3D vehicle with lights, windows, wheels and trim
+- [ ] Import production-quality Blender meshes and more recognizable Nigerian landmarks
 - [ ] Hook up Howler engine, skid and collision audio
 - [ ] Test desktop / mobile FPS and accessibility
 - [ ] Merge stabilized version into `main`
@@ -103,3 +105,9 @@ Future pushes to `main` can trigger automatic deployments on connected hosting p
 ## License
 
 No license has been selected. All rights are reserved by the repository owner unless a license is added.
+
+## Camry Muscle graphics upgrade (feature branch)
+
+The vehicle is an **original procedural, stylized model inspired by the 2007–2011 Toyota Camry XV40**, popularly nicknamed *Camry Muscle* in Nigeria. No proprietary Toyota 3D asset is included. The surrounding track is a **fictional oval inspired by** Lagos's Third Mainland Bridge, not a geographically accurate recreation. Improvements include road lane markings, bridge deck, railings, piers, Lagos signs, lighting poles, water and a coastal skyline.
+
+**Testing still needed:** actual browser appearance, mobile performance, collision stability and driving feedback. This code is not yet an asset-quality, licensed Toyota replica, and the bridge is not to scale.
