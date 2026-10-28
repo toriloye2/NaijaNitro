@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat';
 import { createCamryMuscle } from './CamryMuscle';
+import { loadCamryModel } from './loadCamryModel';
 import { createThirdMainland } from './ThirdMainland';
 import { SpeedEffects } from './SpeedEffects';
 import { EngineAudio } from './EngineAudio';
@@ -86,11 +87,17 @@ export class NitroGame {
     const sun = new THREE.DirectionalLight(0xffecc4, 2.1);
     sun.position.set(-80, 120, 50); this.scene.add(sun);
     createThirdMainland(this.scene, this.world);
-    const camry = createCamryMuscle();
+    let camry = createCamryMuscle();
+    try { camry = await loadCamryModel(); } catch (error) {
+      console.warn('Camry GLB unavailable, using procedural fallback:', error);
+    }
+    if (this.disposed) return;
     this.car = camry.group;
     this.paint = camry.paint;
     this.paint.color.setHex(this.selectedPaint);
     this.garage = new GarageScene();
+    await this.garage.loadDetailedModel();
+    if (this.disposed) return;
     this.garage.setPaint(this.selectedPaint);
     this.garage.resize(this.host.clientWidth || innerWidth, this.host.clientHeight || innerHeight);
     this.wheels = camry.wheels;

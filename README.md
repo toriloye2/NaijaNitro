@@ -163,3 +163,19 @@ The user-provided silver front three-quarter, black rear three-quarter and champ
 - Continued six-color customization with independently configurable materials for garage and race cars.
 
 **Accuracy and licensing:** This is an original stylized geometry approximation based on visual references, not a laser scan, official Toyota model, imported licensed mesh or photorealistic rendering. The photos themselves are not embedded. Geometry is constructed in TypeScript at runtime; a professionally made Blender/GLB model and hands-on visual QA will still be needed to reach premium commercial-game fidelity.
+
+## Game-ready GLB asset pipeline
+
+The Camry Muscle now has a **real glTF/GLB asset pipeline** instead of relying exclusively on procedural Three.js meshes. `tools/build_camry.py` generates the original, lightweight XV40-inspired sedan using Python, NumPy and trimesh. GitHub Actions generates and commits `public/vehicles/camry_muscle_xv40.glb` on the feature branch.
+
+The garage and race engine load the same GLB with Three.js `GLTFLoader`. Both retain a procedural fallback if the asset fails to load. Paint meshes and wheel geometry are named for customization and animation.
+
+To rebuild the asset locally:
+
+```bash
+python -m pip install numpy==2.1.3 trimesh==4.11.1
+python tools/build_camry.py
+npm run build
+```
+
+This is a **game-ready, low-poly original 3D car asset**, not an official Toyota scan or photorealistic model. For commercial-level likeness and surface realism we will still need more detailed hand-built topology, texture maps, paint shading and browser visual testing. We don't embed the reference photos or Toyota emblems.
