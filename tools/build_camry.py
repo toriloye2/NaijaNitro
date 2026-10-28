@@ -73,6 +73,17 @@ sections=[
     (-2.50,.78,.53,.78),(-2.37,.96,.43,.98),(-2.13,1.04,.40,1.10),
     (-1.53,1.07,.40,1.17),(-.80,1.09,.39,1.19),(.85,1.10,.39,1.19),
     (1.62,1.075,.41,1.15),(2.22,1.02,.42,1.02),(2.50,.81,.52,.81)]
+# More longitudinal samples reduce the slab-like body silhouette at game distances.
+# The NN S1 is intentionally fictional rather than a duplicate of any production car.
+dense=[]
+for i in range(len(sections)-1):
+    a,b=sections[i],sections[i+1]
+    for step in range(5):
+        t=step/5
+        t=t*t*(3-2*t)
+        dense.append(tuple(a[j]+(b[j]-a[j])*t for j in range(4)))
+dense.append(sections[-1])
+sections=dense
 verts=[]
 for z,w,bottom,top in sections:
     verts.extend([
@@ -162,6 +173,24 @@ for side in (-1,1):
         b=box(f'{prefix}_Spoke_{i}',(surface_x+side*.018, yy, z),(.03,.12,.041),CHROME)
         b.apply_transform(trimesh.transformations.rotation_matrix(-a,[1,0,0],point=[surface_x+side*.018,yy,z]))
     box(f'{prefix}_Hub',(surface_x+side*.027,.48,zz),(.04,.095,.095),CHROME)
+
+# Original NN S1 identity details: a floating front signature blade, three-point
+# accent lights, branded racing number panel, and lower diffuser. Avoids OEM badges.
+CYAN_ACCENT = material('NN_AccentCyan', [31,205,230],.28,.23,255,[.01,.14,.18])
+CARBON = material('NN_Carbon', [24,31,37],.38,.43)
+for side in (-1,1):
+    polyline(f'NN_SignatureHeadlight_{side}',[
+        [side*.66,1.065,-2.467],[side*.84,1.087,-2.426],[side*1.04,1.159,-2.02]
+    ],CYAN_ACCENT,.022)
+    line(f'NN_DiffuserFin_{side}',
+        (side*.69,.46,2.568),(side*.75,.65,2.553),.04,CARBON)
+    polyline(f'NN_TaillightAccent_{side}',[
+        [side*.46,1.108,2.485],[side*.82,1.108,2.401],[side*.985,1.073,2.344]
+    ],CYAN_ACCENT,.016)
+box('NN_FrontSplitter',(0,.405,-2.43),(1.64,.065,.36),CARBON)
+box('NN_RearDiffuser',(0,.39,2.45),(1.56,.07,.29),CARBON)
+box('NN_FrontAccentBlade',(0,.685,-2.57),(1.07,.035,.055),CYAN_ACCENT)
+box('NN_RearAccentBlade',(0,.72,2.61),(.42,.024,.06),CYAN_ACCENT)
 
 OUT.parent.mkdir(parents=True,exist_ok=True)
 blob=scene.export(file_type='glb')
