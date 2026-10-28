@@ -16,7 +16,7 @@ export class SpeedEffects {
   private light: THREE.PointLight;
   private intensity = 0;
   private readonly count = 52;
-  constructor(private scene: THREE.Scene, private camera: THREE.Camera, private car: THREE.Group) {
+  constructor(scene: THREE.Scene, private camera: THREE.Camera, private car: THREE.Group) {
     const canvas = document.createElement('canvas');
     canvas.width = canvas.height = 128;
     const ctx = canvas.getContext('2d');
