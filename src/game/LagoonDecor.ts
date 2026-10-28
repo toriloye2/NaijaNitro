@@ -5,8 +5,6 @@ export function decorateLagoon(scene:THREE.Scene) {
   const hull=new THREE.MeshStandardMaterial({color:0xf3e8cf,metalness:.12,roughness:.7});
   const shade=new THREE.MeshStandardMaterial({color:0x143c60,roughness:.7});
   const red=new THREE.MeshStandardMaterial({color:0xe59b4b,roughness:.8});
-  const green=new THREE.MeshStandardMaterial({color:0x25755a,roughness:1});
-  const wood=new THREE.MeshStandardMaterial({color:0x76583e,roughness:1});
   const geometry=new THREE.BoxGeometry(1,1,1);
   function addBox(parent:THREE.Object3D,w:number,h:number,d:number,m:THREE.Material,x:number,y:number,z:number){
     const mesh=new THREE.Mesh(geometry,m);mesh.scale.set(w,h,d);mesh.position.set(x,y,z);
@@ -22,23 +20,6 @@ export function decorateLagoon(scene:THREE.Scene) {
     addBox(group,4,1.4,2.1,shade,-.35,1.05,0);
     addBox(group,1,.5,1,hull,3,.8,0);
     scene.add(group);
-  }
-  // Distinctive palm-lined Lagos shorelines rather than anonymous tower blocks.
-  const trunkGeo=new THREE.CylinderGeometry(.22,.42,6,5);
-  const leafGeo=new THREE.ConeGeometry(1.55,5.5,5);
-  for(let i=0;i<94;i++){
-    const x=(i*73%540)-270;
-    const z=(i%2===0?1:-1)*(260+(i*31%64));
-    const tree=new THREE.Group();tree.position.set(x,-2.9,z);
-    const trunk=new THREE.Mesh(trunkGeo,wood);trunk.position.y=3;tree.add(trunk);
-    for(let l=0;l<5;l++){
-      const leaf=new THREE.Mesh(leafGeo,green);
-      leaf.position.set(Math.sin(l*Math.PI*2/5)*1.6,6.5,Math.cos(l*Math.PI*2/5)*1.6);
-      leaf.rotation.z=Math.sin(l*Math.PI*2/5)*1.1;
-      leaf.rotation.x=Math.cos(l*Math.PI*2/5)*1.1;
-      leaf.scale.set(.6,.68,.6);tree.add(leaf);
-    }
-    scene.add(tree);
   }
   // Roadside reflection strips give the barriers and road an additional sense of scale.
   const reflect=new THREE.MeshBasicMaterial({color:0xf3ca53});
