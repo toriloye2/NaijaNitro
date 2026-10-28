@@ -201,3 +201,16 @@ The original NN Street S1 now has a **new detailed procedural glTF model**, buil
 Rebuild with `python tools/build_nn_s1.py` after installing the documented trimesh/NumPy dependencies. The asset-generation GitHub workflow validates and commits the exported GLB.
 
 **Quality boundary:** This is a more detailed browser-ready *prototype*, not a photorealistic or exact reference-image match. Browser rendering, visual proportions and device performance require hands-on review. All vehicle branding and geometry remain original to Naija Nitro.
+
+## Blender studio pipeline
+
+The original NN Street S1 now has a **Blender-native development source** at `tools/build_nn_s1_blender.py`. A GitHub Actions runner installs and runs Blender headlessly. The source builds curved sheetmetal, actual wheel-arch openings, a detailed four-door cabin, layered wheels, a distinct original lighting signature, clearcoat-capable paint and a professional studio lighting setup.
+
+On a successful render/export, the workflow produces:
+
+- `assets/blender/nn_s1.blend`: editable Blender file, including mesh, studio, lighting and camera rigs
+- `public/vehicles/nn_s1.glb`: playable game asset, loaded automatically by the existing Three.js game
+- `public/previews/nn_s1_front.png` and `nn_s1_rear.png`: front and rear studio renders
+- A downloadable GitHub Actions artifact with the same files
+
+The `.glb` excludes the studio props, lights and cameras. The game still uses the same collider/physics independently of the mesh. The headless pipeline and on-screen appearance must both pass QA before replacing the live model. **No original-equipment manufacturer logos or unlicensed external vehicle models are included.**
