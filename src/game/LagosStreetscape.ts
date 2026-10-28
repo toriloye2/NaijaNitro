@@ -8,7 +8,6 @@ const plaster = [0xe7d5b9,0xcba992,0xd5c7b4,0xaabbb5,0xd9cbb4].map(color=>new TH
 const glass = new THREE.MeshPhysicalMaterial({color:0x315a68,metalness:.34,roughness:.25,clearcoat:.25});
 const dark = new THREE.MeshStandardMaterial({color:0x353b39,metalness:.25,roughness:.62});
 const metal = new THREE.MeshStandardMaterial({color:0x8e9695,metalness:.65,roughness:.4});
-const yellow = new THREE.MeshStandardMaterial({color:0xe9b83c,roughness:.65});
 const awnings = [0x117a66,0xf2c64c,0xce4934,0x356da0].map(color=>new THREE.MeshStandardMaterial({color,roughness:.87}));
 const palmBark = new THREE.MeshStandardMaterial({color:0x766044,roughness:1});
 const palmLeaf = new THREE.MeshStandardMaterial({color:0x276b3a,side:THREE.DoubleSide,roughness:1});
