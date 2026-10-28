@@ -6,6 +6,7 @@ import { SpeedEffects } from './SpeedEffects';
 import { EngineAudio } from './EngineAudio';
 import { RaceOpponents } from './RaceOpponents';
 import { NitroPickups } from './NitroPickups';
+import { GarageScene } from './GarageScene';
 
 export type GamePhase = 'menu' | 'countdown' | 'race' | 'paused' | 'finished';
 export type Telemetry = { speed: number; nitro: number; lap: number; time: number; status: string; drift: boolean; boosting: boolean; phase: GamePhase; countdown: number; progress: number; position: number; rivals: number; bestLap: number; lapTime: number };
@@ -21,6 +22,9 @@ export class NitroGame {
   private world!: RAPIER.World;
   private chassis!: RAPIER.RigidBody;
   private car!: THREE.Group;
+  private paint!: THREE.MeshPhysicalMaterial;
+  private garage: GarageScene | null = null;
+  private selectedPaint = 0xd7dde4;
   private wheels: THREE.Group[] = [];
   private effects: SpeedEffects | null = null;
   private sound = new EngineAudio();
@@ -84,6 +88,11 @@ export class NitroGame {
     createThirdMainland(this.scene, this.world);
     const camry = createCamryMuscle();
     this.car = camry.group;
+    this.paint = camry.paint;
+    this.paint.color.setHex(this.selectedPaint);
+    this.garage = new GarageScene();
+    this.garage.setPaint(this.selectedPaint);
+    this.garage.resize(this.host.clientWidth || innerWidth, this.host.clientHeight || innerHeight);
     this.wheels = camry.wheels;
     this.scene.add(this.car);
     this.opponents = new RaceOpponents(this.scene, this.world);
@@ -114,6 +123,12 @@ export class NitroGame {
     }
   }
   setMuted(value: boolean) { this.sound.setMuted(value); }
+  setPaint(color: number) {
+    this.selectedPaint = color;
+    this.paint?.color.setHex(color);
+    this.garage?.setPaint(color);
+  }
+  rotateShowroom(direction: number) { this.garage?.rotateCar(direction); }
   backToMenu() { this.reset(); this.phase = 'menu'; this.status = 'Ready'; }
 
   reset() {
@@ -216,7 +231,12 @@ export class NitroGame {
     this.camera.lookAt(this.car.position.clone().addScaledVector(forward, 15).add(new THREE.Vector3(0, 1.35, 0)));
     this.effects?.update(dt,this.speed,this.boosting,now*.001);
     this.sound.update(this.speed,this.boosting,this.phase==='race');
-    this.renderer.render(this.scene, this.camera);
+    if (this.phase === 'menu' && this.garage) {
+      this.garage.update(dt, now * .001);
+      this.renderer.render(this.garage.scene, this.garage.camera);
+    } else {
+      this.renderer.render(this.scene, this.camera);
+    }
     if (now - this.lastTelemetryTime > 45 || this.phase === 'countdown') {
       this.lastTelemetryTime = now;
       this.onTelemetry({ speed: this.speed, nitro: this.nitro, lap: Math.min(this.lap, 3), time: this.elapsed, status: this.notifyUntil > this.elapsed ? 'LAP COMPLETE!' : this.status,
@@ -228,6 +248,7 @@ export class NitroGame {
     const w = this.host.clientWidth || innerWidth, h = this.host.clientHeight || innerHeight;
     this.camera.aspect = w / h; this.camera.updateProjectionMatrix();
     this.renderer.setSize(w, h);
+    this.garage?.resize(w,h);
   }
   dispose() {
     this.disposed = true; cancelAnimationFrame(this.animation);
@@ -236,6 +257,7 @@ export class NitroGame {
     window.removeEventListener('keyup', this.onKeyUp);
     window.removeEventListener('blur', this.onBlur);
     this.effects?.dispose(); this.effects = null;
+    this.garage?.dispose(); this.garage = null;
     this.sound.dispose();
     this.renderer.dispose(); this.renderer.domElement.remove();
     this.scene.traverse(obj => { if (obj instanceof THREE.Mesh) { obj.geometry.dispose(); const materials = Array.isArray(obj.material) ? obj.material : [obj.material]; materials.forEach(m => m.dispose()); } });
