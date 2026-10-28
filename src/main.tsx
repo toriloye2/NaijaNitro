@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { NitroGame, type Telemetry } from './game/NitroGame';
 import './style.css';
 
-const blank: Telemetry = { speed:0, nitro:100, lap:1, time:0, status:'Loading', drift:false, boosting:false, phase:'menu', countdown:0, progress:0 };
+const blank: Telemetry = { speed:0, nitro:100, lap:1, time:0, status:'Loading', drift:false, boosting:false, phase:'menu', countdown:0, progress:0, position:8, rivals:8, bestLap:0, lapTime:0 };
 const formatted = (t:number) => {
   const minutes = String(Math.floor(t/60)).padStart(2,'0');
   const seconds = String(Math.floor(t%60)).padStart(2,'0');
@@ -39,10 +39,12 @@ function App() {
     {active&&<header className="hud">
       <div className="race-panel">
         <div className="race-brand">NAIJA <b>NITRO</b></div>
-        <div className="race-label">THIRD MAINLAND BRIDGE · LAGOS 🇳🇬</div>
+        <div className="race-label">THIRD MAINLAND BRIDGE · 8-CAR RACE 🇳🇬</div>
+        <div className="race-stat highlight-position"><span>POSITION</span><strong>{info.position}<em>/8</em></strong></div>
         <div className="race-stat"><span>LAP</span><strong>{info.lap}<em>/3</em></strong></div>
         <div className="race-stat"><span>DIST.</span><strong>{Math.min(100,Math.floor(info.progress*100))}%</strong></div>
         <div className="race-status">{info.status}</div>
+        <div className="best-lap">BEST LAP · {info.bestLap>0 ? formatted(info.bestLap) : "--:--.--"}</div>
       </div>
       <div className="race-right">
         <button className="icon-button" aria-label="Pause or resume" onClick={()=>game.current?.togglePause()}>{info.phase==='paused'?'▶':'Ⅱ'}</button>
@@ -64,9 +66,9 @@ function App() {
         <p className="eyebrow">🇳🇬 AN ORIGINAL NIGERIAN RACING EXPERIENCE</p>
         <h1 className="logo"><span>NAIJA</span><b>NITRO</b></h1>
         <div className="title-rule"/>
-        <p className="subtitle">LAGOS ASPHALT <span>·</span> CAMRY MUSCLE EDITION</p>
+        <p className="subtitle">LAGOS ASPHALT <span>·</span> CAMRY MUSCLE EDITION · 8-CAR RACE</p>
         <h2>OWN THE <em>STREETS.</em><br/>RULE THE RACE.</h2>
-        <p className="description">Take the Nigerian-favourite Camry Muscle across a stylized Third Mainland Bridge. Feel every turn, unleash blue nitro flames, and race the Lagos skyline.</p>
+        <p className="description">Take the Nigerian-favourite Camry Muscle across a stylized Third Mainland Bridge. Race seven opponents, collect nitro charges, unleash blue flames, and chase victory across the Lagos skyline.</p>
         <div className="menu-buttons">
           <button className="play-button" disabled={!ready||!!error} onClick={begin}>{error?'ENGINE ERROR':ready?'🏁 START RACE':'LOADING GAME...'}</button>
           <button className="outline-button" onClick={()=>setHelp(v=>!v)}>{help?'CLOSE CONTROLS':'HOW TO PLAY'}</button>
@@ -84,7 +86,7 @@ function App() {
       </div>
     </section>}
     {info.phase==='finished'&&<section className="modal-overlay">
-      <div className="modal"><p className="eyebrow">THIRD MAINLAND BRIDGE</p><h2>FINISH LINE! 🏁</h2><div className="final-time">{formatted(info.time)}</div>
+      <div className="modal"><p className="eyebrow">THIRD MAINLAND BRIDGE</p><h2>FINISH LINE! 🏁</h2><div className="final-time">{formatted(info.time)}</div><p>FINISHED P{info.position}/8 · BEST LAP {info.bestLap>0?formatted(info.bestLap):"—"}</p>
         <button className="play-button" onClick={begin}>RACE AGAIN</button>
         <button className="outline-button" onClick={()=>game.current?.backToMenu()}>MAIN MENU</button>
       </div>

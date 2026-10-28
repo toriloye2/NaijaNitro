@@ -2,7 +2,7 @@
 
 **Lagos Asphalt** is a Nigeria-inspired browser arcade racing game. The ongoing migration replaces the original single-file JavaScript demo with a **TypeScript + Vite + Three.js + Rapier** codebase and a **React UI**.
 
-> **Current main-branch alpha:** This is a new driving-engine prototype, **not feature parity with v6.0.0**. The previous v6 game with two track options, cars and AI remains available on the `main` branch under `game/index.html`. The new engine currently has a cinematic title screen, race countdown, animated nitro and wind effects, plus an upgraded Third Mainland Bridge-inspired oval test circuit, a procedural 2010 Camry Muscle-inspired sedan, a timing HUD and Rapier rigid-body collision handling. Automated build checks pass, but this graphics update still needs hands-on browser testing.
+> **Competitive racing upgrade branch:** This is a new driving-engine prototype, **not feature parity with v6.0.0**. The previous v6 game remains available under `game/index.html`. Current graphical and AI fidelity remains prototype-level. The new engine currently has a cinematic title screen, race countdown, animated nitro and wind effects, plus an upgraded Third Mainland Bridge-inspired oval test circuit, a procedural 2010 Camry Muscle-inspired sedan, a timing HUD, seven rival racing cars, nitro pickups, best-lap tracking and Rapier rigid-body collision handling. Automated build checks pass, but this graphics update still needs hands-on browser testing.
 
 ## Technology
 
@@ -95,7 +95,10 @@ Future pushes to `main` can trigger automatic deployments on connected hosting p
 - [ ] Verify clean `npm install` / `npm run build` in CI
 - [ ] Browser gameplay smoke test and fix handling issues
 - [ ] Raycast-wheel suspension, tire grip and weight transfer
-- [ ] Migrate two legacy circuits, car selection, races and AI opponents
+- [x] Add seven kinematic AI opponents, simple catch-up racing, position tracking and nitro pickups
+- [x] Add procedural asphalt and additional Lagos Lagoon ferries, palms and reflectors
+- [ ] Expand AI with safe overtaking and actual vehicle physics
+- [ ] Migrate second legacy circuit and car selection
 - [x] Add improved stylized Third Mainland Bridge roadway, rails, supports, signs and Lagos skyline
 - [x] Add 2010 Camry Muscle-inspired 3D vehicle with lights, windows, wheels and trim
 - [ ] Import production-quality Blender meshes and more recognizable Nigerian landmarks
@@ -125,3 +128,12 @@ The vehicle is an **original procedural, stylized model inspired by the 2007–2
 - **Performance:** lightweight reusable geometries and responsive CSS overlays. Device-specific performance remains unverified.
 
 **Graphics note:** These are stylized visual effects, not yet photorealistic particle simulations or an Asphalt-quality cinematic pipeline. The legacy road physics are intentionally preserved.
+
+## Competitive racing and graphics upgrade
+
+- Three-lap eight-car race with seven computer-controlled opponents, kinematic collision bodies, and live position ranking.
+- Four visible cyan nitro-recharge collectibles per circuit loop; each has an 18-second cooldown after pickup.
+- Best lap display and finish position.
+- Procedurally textured asphalt with UVs, shore palms, Lagos Lagoon ferries, reflective markers and start-grid styling.
+- Arcade AI follows an ellipse and uses a simple player-gap adjustment. It does **not** yet implement tactical overtakes or robust opponent collision avoidance.
+- Road geometry and skyline are optimized stylized placeholders, not photorealistic recreations. Browser frame rates and handling require testing.
