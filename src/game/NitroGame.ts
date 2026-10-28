@@ -93,7 +93,7 @@ export class NitroGame {
     createThirdMainland(this.scene, this.world);
     let camry = createCamryMuscle();
     try { camry = await loadCamryModel(); } catch (error) {
-      console.warn('Camry GLB unavailable, using procedural fallback:', error);
+      console.warn('NN S1 GLB unavailable, using fallback:', error);
     }
     if (this.disposed) return;
     this.car = camry.group;
