@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { createCamryMuscle, type CarVisual } from './CamryMuscle';
+import { loadCamryModel } from './loadCamryModel';
 
 /**
  * Original Nigeria-inspired 3D garage for Naija Nitro.
@@ -71,7 +72,7 @@ function floorMaterial() {
 export class GarageScene {
   readonly scene = new THREE.Scene();
   readonly camera = new THREE.PerspectiveCamera(46, 1, .1, 130);
-  private readonly camry: CarVisual;
+  private camry: CarVisual;
   private readonly pivot = new THREE.Group();
   private readonly textures: THREE.Texture[] = [];
   private readonly animatedLights: THREE.PointLight[] = [];
@@ -183,6 +184,18 @@ export class GarageScene {
     this.materials.push(...[wall,column,frame,cabinet,green,cyan,white,warm,tire]);
   }
 
+  async loadDetailedModel() {
+    try {
+      const replacement = await loadCamryModel();
+      this.pivot.remove(this.camry.group);
+      this.camry = replacement;
+      this.camry.group.position.y = .2;
+      this.camry.group.rotation.y = .28;
+      this.pivot.add(this.camry.group);
+    } catch (error) {
+      console.warn('Using procedural Camry showroom fallback:', error);
+    }
+  }
   setPaint(color:number) {this.camry.paint.color.setHex(color);}
   rotateCar(direction:number) {this.spin += direction * Math.PI/4;}
   update(dt:number,time:number) {
