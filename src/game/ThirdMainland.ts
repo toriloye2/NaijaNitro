@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat';
+import { makeAsphaltMaterial, addRaceDecor } from './RoadSurface';
 
 const RX = 115, RZ = 75, WIDTH = 27;
 const mat = (color: number, metalness = 0, roughness = .82) =>
@@ -33,17 +34,19 @@ function ellipse(a: number, offset = 0) {
   return {x:x+normal.x*offset,z:z+normal.z*offset,tangent,normal,yaw};
 }
 function ribbon(scene: THREE.Scene, offset: number, width: number, elevation: number, material: THREE.Material) {
-  const vertices: number[] = [], ids: number[] = [], segments = 256;
+  const vertices: number[] = [], uv: number[] = [], ids: number[] = [], segments = 256;
   for(let i=0;i<=segments;i++){
     const a = i/segments*Math.PI*2;
     for(const s of [-1,1]){
       const p=ellipse(a,offset+s*width*.5);
       vertices.push(p.x,elevation,p.z);
+      uv.push(i/segments,s<0?0:1);
     }
     if(i<segments){const j=i*2;ids.push(j,j+1,j+2,j+1,j+3,j+2);}
   }
   const geometry=new THREE.BufferGeometry();
   geometry.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
+  geometry.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
   geometry.setIndex(ids); geometry.computeVertexNormals();
   const mesh=new THREE.Mesh(geometry,material);
   material.side=THREE.DoubleSide; mesh.receiveShadow=true;scene.add(mesh);
@@ -55,7 +58,7 @@ function ribbon(scene: THREE.Scene, offset: number, width: number, elevation: nu
  * This is an oval race loop, not a geographically accurate road model.
  */
 export function createThirdMainland(scene: THREE.Scene,world:RAPIER.World) {
-  const asphalt=mat(0x29313a),lane=mat(0xe3e8e3),edge=mat(0xf2c948),
+  const asphalt=makeAsphaltMaterial(),lane=mat(0xe3e8e3),edge=mat(0xf2c948),
     concrete=mat(0xc3c8c6),darkConcrete=mat(0x8c9a9c),steel=mat(0x718b94,.25),
     sea=mat(0x1c829d,.18,.4);
   scene.background=new THREE.Color(0x8dbcd0);
@@ -138,6 +141,7 @@ export function createThirdMainland(scene: THREE.Scene,world:RAPIER.World) {
     {a:2.05,text:'LAGOS ISLAND'},
     {a:4.16,text:'WELCOME TO LAGOS'}
   ];
+  addRaceDecor(scene);
   for(const s of signage){
     const p=ellipse(s.a,0);
     for(const offset of [-10.5,10.5]){
