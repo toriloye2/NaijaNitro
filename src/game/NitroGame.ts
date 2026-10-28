@@ -36,7 +36,7 @@ export class NitroGame {
   private readonly onKeyDown = (e: KeyboardEvent) => {
     if (['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)) e.preventDefault();
     this.keys.add(e.code);
-    if (e.code === 'KeyR' && !e.repeat) this.reset();
+    if (e.code === 'KeyR' && !e.repeat) { this.reset(); this.active = true; this.status = 'Racing'; }
   };
   private readonly onKeyUp = (e: KeyboardEvent) => this.keys.delete(e.code);
   private readonly onResize = () => this.resize();
