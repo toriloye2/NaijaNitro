@@ -2,7 +2,7 @@
 
 **Lagos Asphalt** is a Nigeria-inspired browser arcade racing game. The ongoing migration replaces the original single-file JavaScript demo with a **TypeScript + Vite + Three.js + Rapier** codebase and a **React UI**.
 
-> **Competitive racing upgrade branch:** This is a new driving-engine prototype, **not feature parity with v6.0.0**. The previous v6 game remains available under `game/index.html`. Current graphical and AI fidelity remains prototype-level. The new engine currently has a cinematic title screen, race countdown, animated nitro and wind effects, plus an upgraded Third Mainland Bridge-inspired oval test circuit, a procedural 2010 Camry Muscle-inspired sedan, a timing HUD, seven rival racing cars, nitro pickups, best-lap tracking and Rapier rigid-body collision handling. Automated build checks pass, but this graphics update still needs hands-on browser testing.
+> **Current main-branch racing prototype:** This is a new driving-engine prototype, **not feature parity with v6.0.0**. The previous v6 game remains available under `game/index.html`. Current graphical and AI fidelity remains prototype-level. The new engine currently has a cinematic title screen, race countdown, animated nitro and wind effects, plus an upgraded Third Mainland Bridge-inspired oval test circuit, a procedural 2010 Camry Muscle-inspired sedan, a timing HUD, seven rival racing cars, nitro pickups, best-lap tracking and Rapier rigid-body collision handling. Automated build checks pass, but this graphics update still needs hands-on browser testing.
 
 ## Technology
 
