@@ -1,6 +1,6 @@
-"""Create an original, optimized XV40 Camry Muscle-inspired 3D game asset.
+"""Create the original NN S1 fictional sedan as an optimized game asset.
 
-No Toyota logos, third-party meshes, downloaded imagery, or copyrighted reference
+No third-party logos, meshes, downloaded imagery, or copyrighted reference
 photos are embedded in the generated file. Coordinates are metres; nose faces -Z.
 Run with: python tools/build_camry.py
 """
@@ -11,7 +11,7 @@ import numpy as np
 import trimesh
 from trimesh.visual.material import PBRMaterial
 
-OUT = Path(__file__).resolve().parents[1] / 'public/vehicles/camry_muscle_xv40.glb'
+OUT = Path(__file__).resolve().parents[1] / 'public/vehicles/nn_s1.glb'
 scene = trimesh.Scene()
 
 def material(name, rgb, metal=0.0, rough=.5, alpha=255, emission=None):
@@ -118,7 +118,7 @@ for s in (-1,1):
     polyline(f'Black_BPillar_{s}',[(s*.839,1.857,.065),(s*1.008,1.22,.065)],DARK,.039)
     polyline(f'Chrome_Belt_{s}',[(s*.994,1.211,-1.08),(s*1.01,1.206,.05),(s*.999,1.209,1.445)],CHROME,.015)
 
-# XV40-inspired grille, swept headlights, lower intakes and fog accents.
+# Original NN S1 grille, swept headlights, lower intakes and fog accents.
 quad('GrilleMesh_Front',[(-.68,.73,-2.522),(.68,.73,-2.522),(.80,1.007,-2.435),(-.80,1.007,-2.435)],GRILLE)
 polyline('Chrome_GrilleOutline',[(-.68,.73,-2.531),(-.80,1.008,-2.443),(0,1.065,-2.467),(.80,1.008,-2.443),(.68,.73,-2.531)],CHROME,.038)
 for i in range(5):
