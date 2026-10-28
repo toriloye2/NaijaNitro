@@ -179,3 +179,7 @@ npm run build
 ```
 
 This is a **game-ready, low-poly original 3D car asset**, not an official Toyota scan or photorealistic model. For commercial-level likeness and surface realism we will still need more detailed hand-built topology, texture maps, paint shading and browser visual testing. We don't embed the reference photos or Toyota emblems.
+
+## Showroom lighting correction
+
+An October 2026 screenshot showed the procedural Camry looking extremely blocky and nearly black. The updated showroom adds a real reflected studio lighting environment (Three.js PMREM + RoomEnvironment), ACES filmic tone mapping, stronger ambient fill and a lower camera angle. These changes improve visibility of metallic paint but **do not solve the low-detail geometry**. A properly modeled and browser-reviewed vehicle is still required before we can claim racing-game-level fidelity.

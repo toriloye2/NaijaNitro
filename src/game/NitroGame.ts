@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import RAPIER from '@dimforge/rapier3d-compat';
 import { createCamryMuscle } from './CamryMuscle';
 import { loadCamryModel } from './loadCamryModel';
@@ -20,6 +21,7 @@ export class NitroGame {
   private scene = new THREE.Scene();
   private camera = new THREE.PerspectiveCamera(65, 1, 0.1, 800);
   private renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+  private environmentTexture: THREE.Texture | null = null;
   private world!: RAPIER.World;
   private chassis!: RAPIER.RigidBody;
   private car!: THREE.Group;
@@ -70,6 +72,8 @@ export class NitroGame {
   constructor(private host: HTMLElement, private onTelemetry: (data: Telemetry) => void) {
     this.renderer.setPixelRatio(Math.min(devicePixelRatio, 1.6));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.55;
     this.host.append(this.renderer.domElement);
     this.resize();
     window.addEventListener('resize', this.onResize);
@@ -96,6 +100,14 @@ export class NitroGame {
     this.paint = camry.paint;
     this.paint.color.setHex(this.selectedPaint);
     this.garage = new GarageScene();
+    // Metallic car paint needs a reflected environment. Without this the model looks flat/black.
+    const pmrem = new THREE.PMREMGenerator(this.renderer);
+    const studio = new RoomEnvironment();
+    this.environmentTexture = pmrem.fromScene(studio, .045).texture;
+    this.scene.environment = this.environmentTexture;
+    this.garage.scene.environment = this.environmentTexture;
+    pmrem.dispose();
+    studio.dispose();
     await this.garage.loadDetailedModel();
     if (this.disposed) return;
     this.garage.setPaint(this.selectedPaint);
@@ -265,6 +277,7 @@ export class NitroGame {
     window.removeEventListener('blur', this.onBlur);
     this.effects?.dispose(); this.effects = null;
     this.garage?.dispose(); this.garage = null;
+    this.environmentTexture?.dispose(); this.environmentTexture = null;
     this.sound.dispose();
     this.renderer.dispose(); this.renderer.domElement.remove();
     this.scene.traverse(obj => { if (obj instanceof THREE.Mesh) { obj.geometry.dispose(); const materials = Array.isArray(obj.material) ? obj.material : [obj.material]; materials.forEach(m => m.dispose()); } });
