@@ -4,6 +4,7 @@ import RAPIER from '@dimforge/rapier3d-compat';
 import { createCamryMuscle } from './CamryMuscle';
 import { loadCamryModel } from './loadCamryModel';
 import { createThirdMainland } from './ThirdMainland';
+import { upgradeToBlenderStreetscape } from './LagosStreetscape';
 import { SpeedEffects } from './SpeedEffects';
 import { EngineAudio } from './EngineAudio';
 import { RaceOpponents } from './RaceOpponents';
@@ -91,6 +92,8 @@ export class NitroGame {
     const sun = new THREE.DirectionalLight(0xffecc4, 2.1);
     sun.position.set(-80, 120, 50); this.scene.add(sun);
     createThirdMainland(this.scene, this.world);
+    await upgradeToBlenderStreetscape(this.scene);
+    if (this.disposed) return;
     let camry = createCamryMuscle();
     try { camry = await loadCamryModel(); } catch (error) {
       console.warn('NN S1 GLB unavailable, using fallback:', error);
