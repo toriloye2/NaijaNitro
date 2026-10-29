@@ -1,3 +1,4 @@
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as THREE from 'three';
 
 // Reusable Nigerian streetscape meshes with layered architecture, storefronts,
@@ -97,4 +98,26 @@ export function addLagosStreetscape(scene:THREE.Scene){
  }
  scene.add(root);
  return root;
+}
+
+/** Replace procedural fallback once the Blender-produced asset has loaded. */
+export async function upgradeToBlenderStreetscape(scene: THREE.Scene): Promise<boolean> {
+  try {
+    const gltf = await new GLTFLoader().loadAsync('/environments/lagos_shore.glb');
+    const replacement = gltf.scene;
+    replacement.name = 'LagosBlenderStreetscape';
+    replacement.traverse(obj => {
+      if (obj instanceof THREE.Mesh) {
+        obj.castShadow = true;
+        obj.receiveShadow = true;
+      }
+    });
+    const fallback = scene.getObjectByName('LagosStreetscape');
+    if (fallback) scene.remove(fallback);
+    scene.add(replacement);
+    return true;
+  } catch (error) {
+    console.warn('Blender environment not available; retaining procedurally generated Lagos scenery.', error);
+    return false;
+  }
 }
