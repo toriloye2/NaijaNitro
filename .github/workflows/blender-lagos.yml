@@ -1,0 +1,46 @@
+name: Build Lagos Blender scenery
+on:
+  push:
+    paths:
+      - 'tools/build_lagos_blender.py'
+      - '.github/workflows/blender-lagos.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Install Blender
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender libegl1 libgl1 libgl1-mesa-dri libopengl0 libosmesa6 xvfb
+          blender --version
+      - name: Create editable Blender scene and optimized game GLB
+        run: xvfb-run -a blender --background --python tools/build_lagos_blender.py
+      - name: Validate assets
+        run: |
+          test -s assets/blender/lagos_shore.blend
+          test -s public/environments/lagos_shore.glb
+          du -h assets/blender/lagos_shore.blend public/environments/lagos_shore.glb
+      - name: Upload generated scene
+        uses: actions/upload-artifact@v4
+        with:
+          name: naija-nitro-lagos-blender-scene
+          path: |
+            assets/blender/lagos_shore.blend
+            public/environments/lagos_shore.glb
+      - name: Commit scene files
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/blender/lagos_shore.blend public/environments/lagos_shore.glb
+          if ! git diff --cached --quiet; then
+            git commit -m "build: export Lagos Blender environment meshes"
+            git push
+          fi
