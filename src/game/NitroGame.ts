@@ -50,6 +50,10 @@ export class NitroGame {
   private speed = 0;
   private yaw = 0;
   private side = 0;
+  private steeringVisual = 0;
+  private bodyRoll = 0;
+  private bodyPitch = 0;
+  private wheelSpin = 0;
   private nitro = 100;
   private elapsed = 0;
   private lap = 1;
@@ -155,7 +159,7 @@ export class NitroGame {
 
   reset() {
     if (!this.chassis) return;
-    this.active = false; this.speed = 0; this.side = 0; this.yaw = Math.PI; this.nitro = 100;
+    this.active = false; this.speed = 0; this.side = 0; this.steeringVisual = 0; this.bodyRoll = 0; this.bodyPitch = 0; this.wheelSpin = 0; this.yaw = Math.PI; this.nitro = 100;
     this.elapsed = 0; this.lapStartedAt = 0; this.bestLap = Infinity; this.position = 8;
     this.lap = 1; this.lastAngle = 0; this.progress = 0; this.boosting = false;
     this.opponents?.reset(); this.pickups?.reset();
@@ -183,16 +187,27 @@ export class NitroGame {
     const gas = this.pressed('gas'), brake = this.pressed('brake'), drifting = this.pressed('drift');
     const boosting = gas && this.pressed('nitro') && this.nitro > 0 && this.speed > 8;
     this.boosting = boosting;
+    // Speed-dependent arcade handling: responsive at low speed, stable at high speed.
     const maxSpeed = boosting ? 95 : 72;
-    if (gas) this.speed += (boosting ? 57 : 34) * dt;
+    const previousSpeed = this.speed;
+    if (gas) this.speed += (boosting ? 57 : 34) * (1 - .32 * Math.max(0, this.speed) / maxSpeed) * dt;
     if (brake) this.speed -= (this.speed > 0 ? 52 : 12) * dt;
     this.speed -= (1.3 + .0035 * this.speed * this.speed) * dt;
     this.speed = clamp(this.speed, -8, maxSpeed);
     if (!gas && !brake && Math.abs(this.speed) < .15) this.speed = 0;
     this.nitro = clamp(this.nitro + (boosting ? -32 : drifting && Math.abs(this.speed) > 15 ? 9 : 3.7) * dt, 0, 100);
-    let steering = Number(this.pressed('left')) - Number(this.pressed('right'));
-    this.yaw += (steering * (drifting ? 1.65 : 1.1) + clamp(headingError, -.45, .45) * .65) * Math.min(1, Math.abs(this.speed) / 9) * dt;
-    this.side += ((drifting ? steering * this.speed * .22 : 0) - this.side) * Math.min(1, dt * (drifting ? 2.2 : 8));
+    const steering = Number(this.pressed('left')) - Number(this.pressed('right'));
+    const speedFactor = Math.min(1, Math.abs(this.speed) / 9);
+    const highSpeedStability = 1 / (1 + Math.abs(this.speed) * .012);
+    const steeringTarget = steering * (drifting ? .58 : .42);
+    this.steeringVisual = THREE.MathUtils.damp(this.steeringVisual, steeringTarget, 10, dt);
+    const yawRate = this.steeringVisual * (drifting ? 3.6 : 2.65) * highSpeedStability;
+    this.yaw += (yawRate + clamp(headingError, -.45, .45) * .65) * speedFactor * dt;
+    // Drift builds lateral slip gradually; grip recovers smoothly when released.
+    const lateralTarget = drifting ? steering * Math.abs(this.speed) * .24 : 0;
+    this.side = THREE.MathUtils.damp(this.side, lateralTarget, drifting ? 2.5 : 9, dt);
+    this.bodyRoll = THREE.MathUtils.damp(this.bodyRoll, -this.steeringVisual * Math.min(1, Math.abs(this.speed) / 32) * .065, 5, dt);
+    this.bodyPitch = THREE.MathUtils.damp(this.bodyPitch, clamp((this.speed - previousSpeed) / dt, -60, 60) * -.00075, 6, dt);
     const forward = new THREE.Vector3(-Math.sin(this.yaw), 0, -Math.cos(this.yaw));
     const right = new THREE.Vector3(Math.cos(this.yaw), 0, -Math.sin(this.yaw));
     const vx = forward.x * this.speed + right.x * this.side;
@@ -233,9 +248,15 @@ export class NitroGame {
     if (!this.car || !this.chassis) return;
     const p = this.chassis.translation();
     this.car.position.set(p.x, p.y - .43, p.z);
-    for (const wheel of this.wheels) wheel.rotation.x -= this.speed / 60 / .49;
+    this.wheelSpin -= this.speed / 60 / .49;
+    for (const wheel of this.wheels) {
+      wheel.rotation.x = this.wheelSpin;
+      if (wheel.name.includes('Front')) wheel.rotation.y = -this.steeringVisual;
+    }
     const rotation = this.chassis.rotation();
     this.car.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w);
+    // Body lean is visual only: the physics collider stays upright and predictable.
+    this.car.quaternion.multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(this.bodyPitch, 0, this.bodyRoll, 'XYZ')));
   }
   private frame = (now: number) => {
     if (this.disposed) return;
