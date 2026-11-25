@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import RAPIER from '@dimforge/rapier3d-compat';
 import { makeAsphaltMaterial, addRaceDecor } from './RoadSurface';
+import { addLekkiWaterfront } from './LekkiWaterfront';
 import { decorateLagoon } from './LagoonDecor';
 import { addLagosStreetscape } from './LagosStreetscape';
 
@@ -130,10 +131,11 @@ export function createThirdMainland(scene: THREE.Scene,world:RAPIER.World) {
   }
   // Detailed Nigerian storefronts, balconies, window geometry and vegetation.
   addLagosStreetscape(scene);
+  addLekkiWaterfront(scene);
   const signage=[
     {a:.12,text:'THIRD MAINLAND BRIDGE'},
-    {a:2.05,text:'LAGOS ISLAND'},
-    {a:4.16,text:'WELCOME TO LAGOS'}
+    {a:2.05,text:'LEKKI  /  IKOYI'},
+    {a:4.16,text:'LAGOS ISLAND  /  VI'}
   ];
   addRaceDecor(scene);
   decorateLagoon(scene);
