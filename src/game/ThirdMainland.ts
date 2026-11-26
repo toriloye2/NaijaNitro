@@ -63,12 +63,25 @@ function ribbon(scene: THREE.Scene, offset: number, width: number, elevation: nu
 export function createThirdMainland(scene: THREE.Scene,world:RAPIER.World) {
   const asphalt=makeAsphaltMaterial(),lane=mat(0xe3e8e3),edge=mat(0xf2c948),
     concrete=mat(0xc3c8c6),darkConcrete=mat(0x8c9a9c),steel=mat(0x718b94,.25),
-    sea=mat(0x1c829d,.18,.4);
-  scene.background=new THREE.Color(0x8dbcd0);
-  scene.fog=new THREE.FogExp2(0x8dbcd0,.0017);
-  scene.add(new THREE.HemisphereLight(0xf3fcff,0x4f7781,2.1));
-  const sun=new THREE.DirectionalLight(0xffefd0,2.0);
-  sun.position.set(-85,145,70);scene.add(sun);
+    sea=mat(0x24778a,.22,.38);
+  // Deterministic ripple normal texture, inexpensive on mobile GPUs.
+  const size=128, pixels=new Uint8Array(size*size*4);
+  for(let y=0;y<size;y++)for(let x=0;x<size;x++){
+    const u=x/size*Math.PI*2,v=y/size*Math.PI*2;
+    const dx=.19*Math.cos(u*3+v*5)+.09*Math.cos(u*11-v*4);
+    const dy=.23*Math.cos(u*3+v*5)-.12*Math.cos(u*11-v*4);
+    const n=new THREE.Vector3(dx,dy,1).normalize(),i=(y*size+x)*4;
+    pixels[i]=Math.round((n.x*.5+.5)*255);pixels[i+1]=Math.round((n.y*.5+.5)*255);pixels[i+2]=Math.round((n.z*.5+.5)*255);pixels[i+3]=255;
+  }
+  const ripple=new THREE.DataTexture(pixels,size,size,THREE.RGBAFormat);
+  ripple.wrapS=ripple.wrapT=THREE.RepeatWrapping;ripple.repeat.set(100,100);
+  ripple.magFilter=THREE.LinearFilter;ripple.minFilter=THREE.LinearMipmapLinearFilter;ripple.generateMipmaps=true;ripple.needsUpdate=true;
+  sea.normalMap=ripple;sea.normalScale.set(.65,.65);
+  scene.background=new THREE.Color(0xb3c9d4);
+  scene.fog=new THREE.FogExp2(0xb3c9d4,.0023);
+  scene.add(new THREE.HemisphereLight(0xfff5e8,0x526d80,1.45));
+  const sun=new THREE.DirectionalLight(0xffd5a2,2.5);
+  sun.position.set(-85,65,70);scene.add(sun);
   const water=new THREE.Mesh(new THREE.PlaneGeometry(1400,1400),sea);
   water.rotation.x=-Math.PI/2;water.position.y=-3.4;scene.add(water);
   // Shoreline strips on distant mainland with layered skyline rather than towers in the lagoon.
@@ -98,12 +111,15 @@ export function createThirdMainland(scene: THREE.Scene,world:RAPIER.World) {
       .setFriction(1.25),body);
   }
   const lightMetal=mat(0xd4dedd,.6,.38);
+  const lampMaterial=mat(0xf2f7dd);
+  const railStripe=mat(0x343b3d);
   for(let i=0;i<128;i++){
     const a=i/128*Math.PI*2;
     for(const side of [-1,1]){
       const p=ellipse(a,side*(WIDTH/2+.9));
       const rail=box(scene,.42,1.12,4.9,concrete,p.x,.44,p.z,p.yaw);
       rail.receiveShadow=true;
+      if(i%3===0) box(scene,.435,.22,1.45,railStripe,p.x,.43,p.z,p.yaw);
       const rb=world.createRigidBody(RAPIER.RigidBodyDesc.fixed()
         .setTranslation(p.x,.48,p.z)
         .setRotation({x:0,y:Math.sin(p.yaw*.5),z:0,w:Math.cos(p.yaw*.5)}));
@@ -118,7 +134,7 @@ export function createThirdMainland(scene: THREE.Scene,world:RAPIER.World) {
       box(scene,.26,7.5,.26,lightMetal,p.x,3.5,p.z);
       const arm=box(scene,.14,.14,3.2,lightMetal,p.x,7.05,p.z,p.yaw);
       arm.position.x+=p.normal.x*1.4;arm.position.z+=p.normal.z*1.4;
-      box(scene,1.25,.22,.58,mat(0xf2f7dd),p.x+p.normal.x*2.7,6.94,p.z+p.normal.z*2.7);
+      box(scene,1.25,.22,.58,lampMaterial,p.x+p.normal.x*2.7,6.94,p.z+p.normal.z*2.7);
     }
     // Repeating bridge pylons spaced above water, plus cross beams beneath the road.
     if(i%4===0){
